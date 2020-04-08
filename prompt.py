@@ -1,0 +1,165 @@
+import sys
+from roster import *
+
+def prompt(display_text="",activated_commands={"": {"title": "","commands": "","action": ""}}):
+    # This function receives an option argument of a string that it will display to the user above the text prompt
+    # Then it accepts a text input command from the user
+    # Then it checks the text input against universal commands that are always accepted
+    # Then it returns the text input to whatever called this function, so that whatever called this can do its own handling of the user input
+
+    # Create lists of possible commands that the prompt will respond to
+    global command_list
+    command_list = {}
+
+    # UNIVERSAL COMMANDS
+    # Create a list of universal commands that the prompt will respond to everywhere in the user flow
+    universal_commands = {}
+    command_list["universal"] = universal_commands
+
+    # QUIT
+    quit_commands = {
+            "title": "Quit Game",
+            "commands": {'quit', 'exit', 'q', 'end'},
+            "action": "do_quit()"
+        }
+    command_list["universal"]["quit"] = quit_commands
+
+    # HELP
+    help_commands = {
+            "title": "Help Screen",
+            "commands": {'help', 'h'},
+            "action": "do_help()"
+            }
+    command_list["universal"]["help"] = help_commands
+    # /end universal commands
+
+    # Prepare a section of the command list that rotates out the commands available in the current user experience
+    command_list["active"] = activated_commands
+    
+    # Create a list of commands that are only available in the login menu screen
+    menu_commands = { # note these display in reverse order
+            "closemenu": {
+                "title": "Close Menu",
+                "commands": {"close", "exit", "back", "quit"},
+                "action": "return False"
+            },
+            "charselect": {
+                "title": "Character Select Roster",
+                "commands": {"char", "charselect", "roster", "select", "character"},
+                "action": "select_char()"
+            }
+        }
+
+    global command
+    command = None
+
+    # while command is None:
+    print(f"\n{display_text}")
+    # try: # The Basic Prompt Default Display
+    command = input(": ").lower()
+    ## commenting out the try/exception because it prevents forcing the process to end which is needed when troubleshooting blocks the quit command
+    # except:
+    #     print(' VALIDATION ERROR: That is not a valid selection!')
+    #     prompt('Try again?') # this provides an infinite loop so the user cannot break the program and end it without using the quitmenu() function
+
+    # Check the list of universal commands and run those first
+    for cmd in command_list["universal"]:
+        if command in command_list["universal"][cmd]["commands"]:
+            do_universal_command(command)
+            return command
+    # None of the universal commands were matched, so check the active commands next
+    for cmd in command_list["active"]:
+        if command in command_list["active"][cmd]["commands"]:
+            # command_list["active"][cmd]["action"] # need to figure out how to run a command from an object key
+            return command
+    do_menu() #trying to make the first thing encountered, the menu, but currently this isnt the right place
+    
+def splash(splash_text):
+    # Add some pretty framing to some text
+    # The number of underscores used should equal the length of the text being used (with slight overhang)
+    frame = "_" * (len(splash_text)+3)
+    # Print the text frames in underscores
+    print(f"\n{frame}\n\n {wordwrap(splash_text)}\n{frame}")
+
+def wordwrap(to_wrap):
+    # TODO: Add logic to clip strings and wrap them when they exceed a certain length
+    # TODO: Add an optional argument to this function that clips the end of a string and does NOT wordwrap it, to create a max length for framing graphics etc
+    wrapped = to_wrap
+    return wrapped
+
+def do_universal_command(command):
+    #----------------------
+    # UNIVERSAL COMMANDS
+    # The following commands are "universal" and will be accepted no matter where in the program the user is at
+    # (In other words, no matter what is calling this prompt() function, these will be considered valid commands that take priority
+    # before returning the user's input to be evaluated by whatever called this prompt function)
+    if command in command_list["universal"]["help"]["commands"]:
+        do_help()
+        return True  
+    if command in command_list["universal"]["quit"]["commands"]:
+        do_quit()
+        return True
+    return False
+
+def do_active_command(command):
+    if command in command_list["active"]:
+        print("DO AN ACTIVE COMMAND")
+
+def do_help():
+    splash("Help Screen: The commands that are currently available are listed below"
+    )
+
+    splash("Universal Commands:")
+    for cmd in command_list["universal"]:
+        print("-",command_list["universal"][cmd]["title"],":",command_list["universal"][cmd]["commands"])
+
+    splash("Currently Active Commands:")
+    for cmd in command_list["active"]:
+        print("-",command_list["active"][cmd]["title"],":",command_list["active"][cmd]["commands"])
+
+    input("\n(Press enter to return to the previous screen)") # just pause and require enter before returning to prompt
+
+def do_quit():
+    splash("Quit Screen")
+    try:
+        verify_quit = input(f"Are you sure you want to quit?\nQuit? [yes/no] ")
+    except:
+        print(' VALIDATION ERROR: That is not a valid selection!')
+        prompt('Try again')
+
+    if verify_quit == "yes":
+        splash("GOOD BYE")
+        quit()
+    # Cancel quit for any input except the positive case defined above. Just catch all the possible commands jic
+    else:
+        prompt()
+
+def do_menu():
+    menu = True
+    
+    while menu is True:
+        splash("Menu Screen")
+
+        # Create a list of commands that are only available in the login menu screen
+        menu_commands = { # note these display in reverse order
+                "closemenu": {
+                    "title": "Close Menu",
+                    "commands": {"close", "exit", "back", "quit"},
+                    "action": "return False"
+                },
+                "charselect": {
+                    "title": "Character Select Roster",
+                    "commands": {"char", "charselect", "roster", "select", "character"},
+                    "action": "select_char()"
+                }
+            }
+
+        for item in menu_commands:
+            print("-",menu_commands[item]["title"])
+        menu_selection = prompt("Select a menu item\n:", menu_commands)
+        
+
+        if menu_selection in command_list["active"]["charselect"]["commands"]:
+            select_char()
+        if menu_selection in command_list["active"]["closemenu"]["commands"]:
+            menu = False
