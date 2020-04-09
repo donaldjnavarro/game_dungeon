@@ -27,7 +27,7 @@ def select_char():
 
     while char is False:
         display_roster()
-        char_select = prompt("What character would you like to play? ", roster_commands).title()
+        char_select = prompt("Which character would you like to play? ", roster_commands).title()
         
         # User selected a valid char
         if char_select in roster:
@@ -42,13 +42,13 @@ def display_char(char):
     # 2. Loop through the char data and display the relevant info
 
     gap = 9 # standard indentation characters
-    border = "_"*gap*3
+    border = " "+("-"*gap*3)
     print(border) # lead each entry with a pagebreak line
     for item in char:
         character = "Character" # the object has a name with no key, so we createa fake key for print uniformity
         spacing = "|"+" "*(gap - len(character)) # uniform display right rail
         print(spacing,character+":",item) 
-        print(border)
+        print("|"+("-"*gap*3))
 
         for key, value in char[item].items():
             if isinstance(value, int):
