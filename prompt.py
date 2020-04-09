@@ -125,7 +125,7 @@ def do_login():
         # Create a list of commands that are only available in the login login screen
         login_commands = { # note these display in reverse order
             "charselect": {
-                "title": "Character Select Roster",
+                "title": "Roster: Select a Character",
                 "commands": {"char", "charselect", "roster", "select", "character"},
                 "action": select_char,
                 "action_arg": False
