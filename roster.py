@@ -1,4 +1,5 @@
 import json
+from prompt import prompt
 
 def get_roster():
     # since we don't need to store the roster all the time, this function will fetch it from the json on an as needed basis
@@ -25,7 +26,7 @@ def select_char():
 
     while char is False:
         roster = display_roster()
-        char_select = input("What character would you like to play? ").title()
+        char_select = prompt("What character would you like to play? ", roster_commands).title()
         
         if char_select in roster_commands["close"]:
             print("Closing the roster")
@@ -54,7 +55,8 @@ def display_char(char):
 
             for key, value in char[item].items():
                 if isinstance(value, int):
-                    visual_level = "|"+("*"*(value))+("-"*(4-value))+"|"
+                    # visual_level = "|"+("*"*(value))+("-"*(4-value))+"|"
+                    visual_level = "["+str(value)+"]"+"|"+("* "*(value))+("  "*(5-value))+"|"
                 else:
                     visual_level = value
                 spacing = " "*(gap - len(key)) # uniform display right rail

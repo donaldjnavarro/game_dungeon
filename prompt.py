@@ -1,5 +1,4 @@
 import sys
-from roster import *
 
 def prompt(display_text="",activated_commands={"": {"title": "","commands": "","action": ""}}):
     # This function receives an option argument of a string that it will display to the user above the text prompt
@@ -7,57 +6,55 @@ def prompt(display_text="",activated_commands={"": {"title": "","commands": "","
     # Then it checks the text input against universal commands that are always accepted
     # Then it returns the text input to whatever called this function, so that whatever called this can do its own handling of the user input
 
-    # Create lists of possible commands that the prompt will respond to
+    #----------------------------
+    # VALID COMMANDS: Create lists of possible commands that the prompt will respond to
     global command_list
     command_list = {}
 
+    #----------------------------
+    # ACTIVE COMMANDS: Set the commands that are currently active based on the arg passed into the function. These are in addition to Universal Commands.
+    command_list["active"] = activated_commands
+
+    #----------------------------
     # UNIVERSAL COMMANDS
     # Create a list of universal commands that the prompt will respond to everywhere in the user flow
     universal_commands = {}
     command_list["universal"] = universal_commands
 
-    # QUIT
+    # UNIVERSAL QUIT COMMANDS
     quit_commands = {
             "title": "Quit Game",
             "commands": {'quit', 'exit', 'q', 'end'},
-            "action": "do_quit()"
+            "action": do_quit
         }
     command_list["universal"]["quit"] = quit_commands
 
-    # HELP
+    # UNIVERSAL HELP COMMANDS
     help_commands = {
             "title": "Help Screen",
             "commands": {'help', 'h'},
-            "action": "do_help()"
+            "action": do_help
             }
     command_list["universal"]["help"] = help_commands
-    # /end universal commands
-
-    # Prepare a section of the command list that rotates out the commands available in the current user experience
-    command_list["active"] = activated_commands
+    # /end commands
+    #----------------------------
     
-    global command
-    command = None
+    prompting = True
+    while prompting is True:
+        # PROMPT DISPLAY
+        command = input(f"\n{display_text}\n:").lower()
 
-    # while command is None:
-    print(f"\n{display_text}")
-    # try: # The Basic Prompt Default Display
-    command = input(": ").lower()
-    ## commenting out the try/exception because it prevents forcing the process to end which is needed when troubleshooting blocks the quit command
-    # except:
-    #     print(' VALIDATION ERROR: That is not a valid selection!')
-    #     prompt('Try again?') # this provides an infinite loop so the user cannot break the program and end it without using the quitlogin() function
+        # TRY UNIVERSAL COMMANDS: Check the list of universal commands and run those first
+        for cmd in command_list["universal"]:
+            if command in command_list["universal"][cmd]["commands"]:
+                command_list["universal"][cmd]["action"]()
+                return command
 
-    # Check the list of universal commands and run those first
-    for cmd in command_list["universal"]:
-        if command in command_list["universal"][cmd]["commands"]:
-            do_universal_command(command)
-            return command
-    # None of the universal commands were matched, so check the active commands next
-    for cmd in command_list["active"]:
-        if command in command_list["active"][cmd]["commands"]:
-            # command_list["active"][cmd]["action"] # need to figure out how to run a command from an object key
-            return command
+        # TRY ACTIVE COMMANDS: None of the universal commands were matched, so check the active commands next
+        for cmd in command_list["active"]:
+            if command in command_list["active"][cmd]["commands"]:
+                command_list["active"][cmd]["action"]()
+                return command
     
 def splash(splash_text):
     # Add some pretty framing to some text
@@ -120,6 +117,8 @@ def do_quit():
         prompt()
 
 def do_login():
+    from roster import select_char
+
     login = True
     
     while login is True:
@@ -130,14 +129,10 @@ def do_login():
                 "charselect": {
                     "title": "Character Select Roster",
                     "commands": {"char", "charselect", "roster", "select", "character"},
-                    "action": "select_char()"
+                    "action": select_char
                 }
             }
 
         for item in login_commands:
             print("-",login_commands[item]["title"])
         login_selection = prompt("Make a selection", login_commands)
-    
-        # User input within the login
-        if login_selection in command_list["active"]["charselect"]["commands"]:
-            select_char()
