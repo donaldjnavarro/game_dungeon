@@ -41,20 +41,20 @@ def display_char(char):
     # 1. Create formatting to make the stat page display all pretty
     # 2. Loop through the char data and display the relevant info
 
-    gap = 13 # standard indentation characters
+    gap = 10 # standard indentation characters
     print("_"*gap*3) # lead each entry with a pagebreak line
     for item in char:
         character = "Character" # the object has a name with no key, so we createa fake key for print uniformity
-        spacing = " "*(gap - len(character)) # uniform display right rail
+        spacing = "|"+" "*(gap - len(character)) # uniform display right rail
         print(spacing,character+":",item) 
 
         for key, value in char[item].items():
             if isinstance(value, int):
                 # visual_level = "|"+("*"*(value))+("-"*(4-value))+"|"
-                visual_level = "["+str(value)+"]"+"|"+("* "*(value))+("  "*(5-value))+"|"
+                visual_level = "["+str(value)+"] "+("* "*(value))+("  "*(5-value))
             else:
                 visual_level = value
-            spacing = " "*(gap - len(key)) # uniform display right rail
+            spacing = "|"+" "*(gap - len(key)) # uniform display right rail
             print(spacing,key.title()+":",visual_level) # .title to capitalize
     print("_"*gap*3)
     
