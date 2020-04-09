@@ -7,19 +7,24 @@ def get_roster():
         return json.load(json_file)
 
 def display_roster():
+    # Display the roster
+    # 1. Grab the roster from a local json file
+    # 2. Loop through the roster and display each char in it
+
     roster = get_roster()
+
     for item in roster:
         char_iteration = {}
         char_iteration[item] = roster[item]
         display_char(char_iteration)
-    return roster
 
 def select_char():
     char = False
-    roster = display_roster()
+    roster = get_roster()
     roster_commands = False
 
     while char is False:
+        display_roster()
         char_select = prompt("What character would you like to play? ", roster_commands).title()
         
         # for cmd in roster_commands:
