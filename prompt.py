@@ -1,6 +1,6 @@
 import sys
 
-def prompt(display_text="",activated_commands={"": {"title": "","commands": "","action": ""}}):
+def prompt(display_text="",activated_commands=False):
     # This function receives an option argument of a string that it will display to the user above the text prompt
     # Then it accepts a text input command from the user
     # Then it checks the text input against universal commands that are always accepted
@@ -25,7 +25,8 @@ def prompt(display_text="",activated_commands={"": {"title": "","commands": "","
     quit_commands = {
             "title": "Quit Game",
             "commands": {'quit', 'exit', 'q', 'end'},
-            "action": do_quit
+            "action": do_quit,
+            # "action_arg": False
         }
     command_list["universal"]["quit"] = quit_commands
 
@@ -33,7 +34,8 @@ def prompt(display_text="",activated_commands={"": {"title": "","commands": "","
     help_commands = {
             "title": "Help Screen",
             "commands": {'help', 'h'},
-            "action": do_help
+            "action": do_help,
+            # "action_arg": False
             }
     command_list["universal"]["help"] = help_commands
     # /end commands
@@ -48,15 +50,19 @@ def prompt(display_text="",activated_commands={"": {"title": "","commands": "","
         for cmd in command_list["universal"]:
             if command in command_list["universal"][cmd]["commands"]:
                 command_list["universal"][cmd]["action"]()
-                return command
 
         # TRY ACTIVE COMMANDS: None of the universal commands were matched, so check the active commands next
-        if command_list["active"] == False:
+        if command_list["active"] == False: # if the prompt was sent without active commands, and input didnt match universal, then send the user's input back to the function that called this prompt
             return command
-        else:
+        else: # if active command options were sent with this prompt, check the user input against them 
             for cmd in command_list["active"]:
                 if command in command_list["active"][cmd]["commands"]:
-                    command_list["active"][cmd]["action"]()
+                    if command_list["active"][cmd]["action_arg"] != False:
+                        active_response = command_list["active"][cmd]["action"](command_list["active"][cmd]["action_arg"])
+                    else:
+                        active_response = command_list["active"][cmd]["action"]()
+                    if active_response != False:
+                        return active_response
     
 def splash(splash_text):
     # Add some pretty framing to some text
@@ -72,8 +78,7 @@ def wordwrap(to_wrap):
     return wrapped
 
 def do_help():
-    splash("Help Screen: The commands that are currently available are listed below"
-    )
+    splash("Help Screen: The commands that are currently available are listed below")
 
     splash("Universal Commands:")
     for cmd in command_list["universal"]:
@@ -103,14 +108,22 @@ def do_login():
 
         # Create a list of commands that are only available in the login login screen
         login_commands = { # note these display in reverse order
-                "charselect": {
-                    "title": "Character Select Roster",
-                    "commands": {"char", "charselect", "roster", "select", "character"},
-                    "action": select_char
-                }
+            "charselect": {
+                "title": "Character Select Roster",
+                "commands": {"char", "charselect", "roster", "select", "character"},
+                "action": select_char,
+                "action_arg": False
             }
-
+        }
+        # print the login options that are available
         for item in login_commands:
             print("-",login_commands[item]["title"])
+        
+        # prompt the user to choose from the login options
         login_selection = prompt("Make a selection", login_commands)
-        print("LOGIN SELECTION: ",login_selection)
+        if login_selection != False:
+            return login_selection
+
+def display_stats(char):
+    splash("You are playing:")
+    display_char(char)

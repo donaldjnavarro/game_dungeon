@@ -18,18 +18,6 @@ def select_char():
     char = False
     roster = display_roster()
     roster_commands = False
-    # {
-    #     "close": {
-    #         "title": "Close Roster",
-    #         "commands": {"close", "back"},
-    #         "action": False # break the loop and leave the roster
-    #     },
-    #     "select": {
-    #         "title": "Select Character",
-    #         "commands": roster,
-    #         "action": False # return the action which should be a char name
-    #     }
-    # }
 
     while char is False:
         char_select = prompt("What character would you like to play? ", roster_commands).title()
@@ -39,11 +27,7 @@ def select_char():
             print("You selected",char_select)
             char = {}
             char[char_select] = roster[char_select]
-            print(char)
             return char
-        # else:
-        #     print("There is no character named that in the roster. Try again?")
-        #     return False
 
 def display_char(char):
     if char is False:
