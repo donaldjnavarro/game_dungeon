@@ -1,7 +1,6 @@
 # Written for Python 3+
 from debug import *
 from prompt import *
-import launch_var
 
 splash("WELCOME?")
 launch = True
@@ -10,7 +9,7 @@ while launch:
     # Launch a prompt!
     # This creates the default prompt loop from which anything runs
 
-    command = prompt()
+    command = do_login()
 
     # Place any unique command calls here. These will define the user experience flow
 

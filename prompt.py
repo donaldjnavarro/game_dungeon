@@ -36,20 +36,6 @@ def prompt(display_text="",activated_commands={"": {"title": "","commands": "","
     # Prepare a section of the command list that rotates out the commands available in the current user experience
     command_list["active"] = activated_commands
     
-    # Create a list of commands that are only available in the login menu screen
-    menu_commands = { # note these display in reverse order
-            "closemenu": {
-                "title": "Close Menu",
-                "commands": {"close", "exit", "back", "quit"},
-                "action": "return False"
-            },
-            "charselect": {
-                "title": "Character Select Roster",
-                "commands": {"char", "charselect", "roster", "select", "character"},
-                "action": "select_char()"
-            }
-        }
-
     global command
     command = None
 
@@ -60,7 +46,7 @@ def prompt(display_text="",activated_commands={"": {"title": "","commands": "","
     ## commenting out the try/exception because it prevents forcing the process to end which is needed when troubleshooting blocks the quit command
     # except:
     #     print(' VALIDATION ERROR: That is not a valid selection!')
-    #     prompt('Try again?') # this provides an infinite loop so the user cannot break the program and end it without using the quitmenu() function
+    #     prompt('Try again?') # this provides an infinite loop so the user cannot break the program and end it without using the quitlogin() function
 
     # Check the list of universal commands and run those first
     for cmd in command_list["universal"]:
@@ -72,7 +58,6 @@ def prompt(display_text="",activated_commands={"": {"title": "","commands": "","
         if command in command_list["active"][cmd]["commands"]:
             # command_list["active"][cmd]["action"] # need to figure out how to run a command from an object key
             return command
-    do_menu() #trying to make the first thing encountered, the menu, but currently this isnt the right place
     
 def splash(splash_text):
     # Add some pretty framing to some text
@@ -134,19 +119,14 @@ def do_quit():
     else:
         prompt()
 
-def do_menu():
-    menu = True
+def do_login():
+    login = True
     
-    while menu is True:
-        splash("Menu Screen")
+    while login is True:
+        splash("Login Screen")
 
-        # Create a list of commands that are only available in the login menu screen
-        menu_commands = { # note these display in reverse order
-                "closemenu": {
-                    "title": "Close Menu",
-                    "commands": {"close", "exit", "back", "quit"},
-                    "action": "return False"
-                },
+        # Create a list of commands that are only available in the login login screen
+        login_commands = { # note these display in reverse order
                 "charselect": {
                     "title": "Character Select Roster",
                     "commands": {"char", "charselect", "roster", "select", "character"},
@@ -154,12 +134,10 @@ def do_menu():
                 }
             }
 
-        for item in menu_commands:
-            print("-",menu_commands[item]["title"])
-        menu_selection = prompt("Select a menu item\n:", menu_commands)
-        
-
-        if menu_selection in command_list["active"]["charselect"]["commands"]:
+        for item in login_commands:
+            print("-",login_commands[item]["title"])
+        login_selection = prompt("Make a selection", login_commands)
+    
+        # User input within the login
+        if login_selection in command_list["active"]["charselect"]["commands"]:
             select_char()
-        if menu_selection in command_list["active"]["closemenu"]["commands"]:
-            menu = False
