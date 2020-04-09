@@ -50,7 +50,7 @@ def display_char(char):
         spacing = "|"+" "*(gap - len(character)) # uniform display right rail
         rightrail = ((14-len(str(item)))*" ")+"|"
         print(spacing,character+":",item,rightrail) 
-        print("|"+("-"*gap*3))
+        print(" "+("-"*gap*3))
 
         for key, value in char[item].items():
             if isinstance(value, int):
