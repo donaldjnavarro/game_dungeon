@@ -78,14 +78,21 @@ def prompt(display_text="",activated_commands=False):
 def splash(splash_text):
     # Add some pretty framing to some text
     # The number of underscores used should equal the length of the text being used (with slight overhang)
-    frame = "_" * (len(splash_text)+3)
+    # [:x] create a hard cap for how long the framing should be, this should be slightly longer than the max_string value in the wordwrap function
+    frame = ("_" * (len(splash_text)+3))[:52]
     # Print the text frames in underscores
-    print(f"\n{frame}\n\n {wordwrap(splash_text)}\n{frame}")
+    print(f"\n{frame}\n\n{wordwrap(splash_text)}\n{frame}\n")
 
+import textwrap
 def wordwrap(to_wrap):
-    # TODO: Add logic to clip strings and wrap them when they exceed a certain length
-    # TODO: Add an optional argument to this function that clips the end of a string and does NOT wordwrap it, to create a max length for framing graphics etc
-    wrapped = to_wrap
+    # Function to use on all displayed text to format it
+    # 1. max_string sets the maximum number of characters for any given line, without cutting words
+    # 2. indent var sets the space to be placed at the beginning of every line
+    # 3. set a new variable with a wordwrapped version of the string that was passed into this function
+    # 4. return the newly wordwrapped string to whatever called this function
+    max_string = 50
+    indent = "| "
+    wrapped = textwrap.indent(text=textwrap.TextWrapper(width=max_string).fill(text=to_wrap), prefix=indent)
     return wrapped
 
 def do_help():
