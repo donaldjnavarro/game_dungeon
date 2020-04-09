@@ -16,30 +16,34 @@ def display_roster():
 
 def select_char():
     char = False
-    roster_commands = {
-        "close": {
-            "title": "Close Roster",
-            "commands": {"close", "back"},
-            "action": "return False"
-        }
-    }
+    roster = display_roster()
+    roster_commands = False
+    # {
+    #     "close": {
+    #         "title": "Close Roster",
+    #         "commands": {"close", "back"},
+    #         "action": False # break the loop and leave the roster
+    #     },
+    #     "select": {
+    #         "title": "Select Character",
+    #         "commands": roster,
+    #         "action": False # return the action which should be a char name
+    #     }
+    # }
 
     while char is False:
-        roster = display_roster()
         char_select = prompt("What character would you like to play? ", roster_commands).title()
         
-        if char_select in roster_commands["close"]:
-            print("Closing the roster")
-            return False
-        
+        # for cmd in roster_commands:
         if char_select in roster:
             print("You selected",char_select)
             char = {}
             char[char_select] = roster[char_select]
+            print(char)
             return char
-        else:
-            print("There is no character named that in the roster. Try again?")
-            return False
+        # else:
+        #     print("There is no character named that in the roster. Try again?")
+        #     return False
 
 def display_char(char):
     if char is False:

@@ -51,10 +51,12 @@ def prompt(display_text="",activated_commands={"": {"title": "","commands": "","
                 return command
 
         # TRY ACTIVE COMMANDS: None of the universal commands were matched, so check the active commands next
-        for cmd in command_list["active"]:
-            if command in command_list["active"][cmd]["commands"]:
-                command_list["active"][cmd]["action"]()
-                return command
+        if command_list["active"] == False:
+            return command
+        else:
+            for cmd in command_list["active"]:
+                if command in command_list["active"][cmd]["commands"]:
+                    command_list["active"][cmd]["action"]()
     
 def splash(splash_text):
     # Add some pretty framing to some text
@@ -69,24 +71,6 @@ def wordwrap(to_wrap):
     wrapped = to_wrap
     return wrapped
 
-def do_universal_command(command):
-    #----------------------
-    # UNIVERSAL COMMANDS
-    # The following commands are "universal" and will be accepted no matter where in the program the user is at
-    # (In other words, no matter what is calling this prompt() function, these will be considered valid commands that take priority
-    # before returning the user's input to be evaluated by whatever called this prompt function)
-    if command in command_list["universal"]["help"]["commands"]:
-        do_help()
-        return True  
-    if command in command_list["universal"]["quit"]["commands"]:
-        do_quit()
-        return True
-    return False
-
-def do_active_command(command):
-    if command in command_list["active"]:
-        print("DO AN ACTIVE COMMAND")
-
 def do_help():
     splash("Help Screen: The commands that are currently available are listed below"
     )
@@ -95,32 +79,25 @@ def do_help():
     for cmd in command_list["universal"]:
         print("-",command_list["universal"][cmd]["title"],":",command_list["universal"][cmd]["commands"])
 
-    splash("Currently Active Commands:")
-    for cmd in command_list["active"]:
-        print("-",command_list["active"][cmd]["title"],":",command_list["active"][cmd]["commands"])
+    if command_list["active"] != False:
+        splash("Currently Active Commands:")
+        for cmd in command_list["active"]:
+            print("-",command_list["active"][cmd]["title"],":",command_list["active"][cmd]["commands"])
 
     input("\n(Press enter to return to the previous screen)") # just pause and require enter before returning to prompt
 
 def do_quit():
     splash("Quit Screen")
-    try:
-        verify_quit = input(f"Are you sure you want to quit?\nQuit? [yes/no] ")
-    except:
-        print(' VALIDATION ERROR: That is not a valid selection!')
-        prompt('Try again')
+    verify_quit = input(f"Are you sure you want to quit?\nQuit? [yes/no] ")
 
     if verify_quit == "yes":
         splash("GOOD BYE")
         quit()
-    # Cancel quit for any input except the positive case defined above. Just catch all the possible commands jic
-    else:
-        prompt()
 
 def do_login():
     from roster import select_char
 
     login = True
-    
     while login is True:
         splash("Login Screen")
 
@@ -136,3 +113,4 @@ def do_login():
         for item in login_commands:
             print("-",login_commands[item]["title"])
         login_selection = prompt("Make a selection", login_commands)
+        print("LOGIN SELECTION: ",login_selection)
