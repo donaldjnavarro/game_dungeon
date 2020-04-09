@@ -1,10 +1,17 @@
 import sys
 
 def prompt(display_text="",activated_commands=False):
-    # This function receives an option argument of a string that it will display to the user above the text prompt
-    # Then it accepts a text input command from the user
-    # Then it checks the text input against universal commands that are always accepted
-    # Then it returns the text input to whatever called this function, so that whatever called this can do its own handling of the user input
+    # PRIMARY COMMANDLINE INTERFACE
+    # 1. Optional argument of a string that it will display to the user above the text prompt
+    # 2. Optional argument of an object of commands to set as "active" in addition to the default universal commands
+    # 3. PROMPT: Accept user text input
+    # 4. RUN UNIVERSAL COMMANDS: the "action" function listed in the command_list object if input matches the "commands" of universal_commands
+    # 5. RUN ACTIVE COMMANDS: the "action" function listed in the command_list object if input matches the "commands" of active_commands
+    #
+    # Note: Commands have an "action_arg" key that provides the option for an argument to pass to the function that is run when that command is called
+    #    This is needed in order to pass char data around. Currently we have conditionals checking for this argument
+    #    before we know how to phrase the syntax of the command's action. Hopefully we can find a cleaner way to do this in the future
+
 
     #----------------------------
     # VALID COMMANDS: Create lists of possible commands that the prompt will respond to
