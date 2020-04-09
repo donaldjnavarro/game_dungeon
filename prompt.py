@@ -59,9 +59,11 @@ def prompt(display_text="",activated_commands=False):
                 command_list["universal"][cmd]["action"]()
 
         # TRY ACTIVE COMMANDS: None of the universal commands were matched, so check the active commands next
-        if command_list["active"] == False: # if the prompt was sent without active commands, and input didnt match universal, then send the user's input back to the function that called this prompt
+        # if the prompt was sent without active commands, and input didnt match universal, then send the user's input back to the function that called this prompt so that function can compare it to things other than command actions
+        if command_list["active"] == False: 
             return command
-        else: # if active command options were sent with this prompt, check the user input against them 
+        # if active command options were sent with this prompt, check the user input against them 
+        else: 
             for cmd in command_list["active"]:
                 if command in command_list["active"][cmd]["commands"]:
                     if command_list["active"][cmd]["action_arg"] != False:
@@ -70,6 +72,8 @@ def prompt(display_text="",activated_commands=False):
                         active_response = command_list["active"][cmd]["action"]()
                     if active_response != False:
                         return active_response
+        # When the user didn't input any valid commands
+        return False
     
 def splash(splash_text):
     # Add some pretty framing to some text
@@ -111,8 +115,6 @@ def do_login():
 
     login = True
     while login is True:
-        splash("Login Screen")
-
         # Create a list of commands that are only available in the login login screen
         login_commands = { # note these display in reverse order
             "charselect": {
@@ -123,6 +125,7 @@ def do_login():
             }
         }
         # print the login options that are available
+        splash("Login Screen")
         for item in login_commands:
             print("-",login_commands[item]["title"])
         

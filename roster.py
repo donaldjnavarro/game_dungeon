@@ -23,7 +23,7 @@ def select_char():
     # 3. If the user selects a valid character, end this function and return the character's data
     char = False
     roster = get_roster()
-    roster_commands = False
+    roster_commands = False # this variable will catch the user's input that is returned from prompt()
 
     while char is False:
         display_roster()
