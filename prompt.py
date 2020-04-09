@@ -72,7 +72,7 @@ def prompt(display_text="",activated_commands=False):
                         active_response = command_list["active"][cmd]["action"]()
                     if active_response != False:
                         return active_response
-        # When the user didn't input any valid commands
+        # When the user didn't input any valid commands, return to the function that called the prompt
         return False
     
 def splash(splash_text):
