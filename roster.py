@@ -40,6 +40,7 @@ def display_char(char):
     # Display an individual character's stats
     # 1. Create formatting to make the stat page display all pretty
     # 2. Loop through the char data and display the relevant info
+    # NOTE: Sorry I handled the sizes of the gaps all willy nilly and just made them work :/ probably should revisit this and make the math use uniform variables based on intended total page width
 
     gap = 9 # standard indentation characters
     border = " "+("-"*gap*3)
@@ -47,16 +48,18 @@ def display_char(char):
     for item in char:
         character = "Character" # the object has a name with no key, so we createa fake key for print uniformity
         spacing = "|"+" "*(gap - len(character)) # uniform display right rail
-        print(spacing,character+":",item) 
+        rightrail = ((14-len(str(item)))*" ")+"|"
+        print(spacing,character+":",item,rightrail) 
         print("|"+("-"*gap*3))
 
         for key, value in char[item].items():
             if isinstance(value, int):
-                # visual_level = "|"+("*"*(value))+("-"*(4-value))+"|"
                 visual_level = "["+str(value)+"] "+("* "*(value))+("  "*(5-value))
+                rightrail = ((4-len(str(value)*3))*" ")+"|"
             else:
                 visual_level = value
-            spacing = "|"+" "*(gap - len(key)) # uniform display right rail
-            print(spacing,key.title()+":",visual_level) # .title to capitalize
+                rightrail = ((15-len(str(value)))*" ")+"|"
+            spacing = "|"+" "*(gap - len(key)) # create indent to align text right
+            print(spacing,key.title()+":",visual_level+rightrail) # .title to capitalize
     print(border+"\n")
     
