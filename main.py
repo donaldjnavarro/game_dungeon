@@ -74,9 +74,8 @@ class login(prompt):
             char_speed = roster[arg]["speed"]
             char_mind = roster[arg]["mind"]
             char_heart = roster[arg]["heart"]
+            global char
             char = create_char(char_name, char_body, char_speed, char_mind, char_heart)
-            # TODO: Need to send roster[arg] char data to town() or make it available globally?
-            # TODO: End the login flow and proceed to the town flow
             town().cmdloop()
     # end login()
 
