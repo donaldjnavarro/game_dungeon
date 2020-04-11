@@ -75,7 +75,6 @@ class login(prompt):
 
         # CHARACTER SELECTED
         elif arg in roster:
-            print('You have selected '+arg)
             char_name = arg
             char_body = roster[arg]["body"]
             char_speed = roster[arg]["speed"]
@@ -83,7 +82,11 @@ class login(prompt):
             char_heart = roster[arg]["heart"]
             global char
             char = create_char(char_name, char_body, char_speed, char_mind, char_heart)
+            # print stats
+            world.do_who(self, char)
+            print()
             town().cmdloop()
+            return True
         
     # end login()
 
@@ -129,7 +132,6 @@ class create_char(object):
 class world(prompt):
     """Parent class for all class prompts for a character that is logged in"""
 
-
     def preloop(self):
         global here
         here = "...somewhere." #default value that hopefully will never be called. Assign this variable in every class that inherits this class
@@ -161,12 +163,13 @@ class town(world):
     def preloop(self):
         # Call this when the user first arrives in this class
         global here
-        here = "in a town."
+        here = "in a town"
         print(f'You arrive {here}.')
 
     def do_dungeon(self, arg):
         """Leave the town and travel to a dungeon."""
         dungeon().cmdloop()
+        return True
 
 class dungeon(world):
     """Go fight monsters!"""
@@ -179,6 +182,7 @@ class dungeon(world):
     def do_town(self, arg):
         """Flee the dungeon and return to town."""
         town().cmdloop()
+        return True
 
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
