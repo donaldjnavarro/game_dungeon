@@ -11,10 +11,8 @@ class prompt(cmd.Cmd):
     """
     prompt  = ': '
 
-    def do_help(self, arg):
-        print('HELP SCREEN')
-
     def do_quit(self, arg):
+        """Close the program"""
         print('QUIT SCREEN')
         return True # End the current prompt loop
     
@@ -42,12 +40,10 @@ class login(prompt):
         print(" -----------")
 
     def do_login(self, arg):
-        """
-        LOGIN FLOW:
-        1. User sees the roster of characters available in the local roster.json
-        2. User selects character from the roster
-        3. User is navigated to town() after selecting a character
-        """
+        """Display a list of characters. This command with an argument will select a character and start the game."""
+        # 1. User sees the roster of characters available in the local roster.json
+        # 2. User selects character from the roster
+        # 3. User is navigated to town() after selecting a character
 
         # ROSTER FETCH:
         # 1. Grab the roster from a local json file
@@ -57,10 +53,10 @@ class login(prompt):
             roster = json.load(json_file)
 
         # USER INPUT: CHAR SELECT
-        # 1. If the user inputs "login" without an argument, then the roster displays
-        # 2. User selects a character from the roster
-        # 3. If the user enters an invalid character name, send validation message
-        # 4. User is navigated to town()        
+        # 1. Roster displays if the user inputs "login" without a valid char name
+        # 2. If the user enters an invalid character name, send validation message
+        # 3. User selects a character from the roster
+        # 4. User that selected a valid character is navigated to town()        
         arg = arg.title()
 
         # ROSTER DISPLAY
