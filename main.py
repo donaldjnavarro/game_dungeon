@@ -12,9 +12,11 @@ class prompt(cmd.Cmd):
     prompt  = ': '
 
     def do_quit(self, arg):
-        """Close the program"""
+        """Close the program. Nothing is saved."""
         print('QUIT SCREEN')
-        return True # End the current prompt loop
+        quit()
+        # Removing this: beware this in prompt, it only ends the current prompt and enables the user to travel backwards into previous prompts
+        # return True # End the current prompt loop
     
     def emptyline(self):
         # When the user presses enter without typing anything
@@ -126,10 +128,15 @@ class create_char(object):
 
 class world(prompt):
     """Parent class for all class prompts for a character that is logged in"""
-    
+
+
+    def preloop(self):
+        global here
+        here = "...somewhere." #default value that hopefully will never be called. Assign this variable in every class that inherits this class
+
     def do_where(self, arg):
         """Display your character's current location"""
-        print(f'You are in a town')
+        print(f'You are {here}')
 
     def do_who(self, arg):
         """Display your character's current stats"""
@@ -153,7 +160,9 @@ class town(world):
 
     def preloop(self):
         # Call this when the user first arrives in this class
-        print('You arrive in a town.')
+        global here
+        here = "in a town."
+        print(f'You arrive {here}.')
 
     def do_dungeon(self, arg):
         """Leave the town and travel to a dungeon."""
@@ -161,8 +170,11 @@ class town(world):
 
 class dungeon(world):
     """Go fight monsters!"""
+
     def preloop(self):
-        print('You travel to a dungeon.')
+        global here
+        here = "in a dungeon"
+        print(f'You go {here}.')
 
     def do_town(self, arg):
         """Flee the dungeon and return to town."""
