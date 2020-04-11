@@ -1,6 +1,9 @@
 import cmd
 import json
 
+global char # the currently active character's stats
+char = {}
+
 class prompt(cmd.Cmd):
     """
     GLOBAL PROMPT:
@@ -31,27 +34,46 @@ class login(prompt):
     # 2. Login option provides interface for selecting a character from a local json file
     # 3. After selecting a character the user is navigated to the town() class
 
-    # ROSTER
-    global roster
-    with open('roster.json') as json_file:
-        roster = json.load(json_file)
+    print(" -----------")
+    print("| New Game!")
+    print(" -----------")
+    print("| - Login")
+    print("| - Help")
+    print("| - Quit")
+    print(" -----------")
 
     def do_login(self, arg):
-        # LOGIN FLOW:
-        #   Display the roster of characters
-        #   Start a prompt loop that accepts 
+        """
+        LOGIN FLOW:
+        1. User sees the roster of characters available in the local roster.json
+        2. User selects character from the roster
+        3. User is navigated to town() after selecting a character
+        """
 
-        arg = arg.title()
-        print('You have selected '+arg)
-
-    def do_roster(self, arg):
-        # Display the roster
+        # ROSTER DISPLAY:
         # 1. Grab the roster from a local json file
         # 2. Loop through the roster and display each char in it
-        for item in roster:
-            char_iteration = {}
-            char_iteration[item] = roster[item]
-            display_char(char_iteration)
+        global roster
+        with open('roster.json') as json_file:
+            roster = json.load(json_file)
+
+        if arg == "": # Typing login without an argument displays the roster
+            for item in roster:
+                char_iteration = {}
+                char_iteration[item] = roster[item]
+                display_char(char_iteration)
+            print(f'Input "login <character>" to select a character.')
+
+        # CHAR SELECT
+        # 1. User selects a character from the roster
+        # 2. User is navigated to town()        
+        arg = arg.title()
+        if arg in roster:
+            print('You have selected '+arg)
+            char = roster[arg]
+            # TODO: Need to send roster[arg] char data to town() or make it available globally?
+            # TODO: End the login flow and proceed to the town flow
+
     # end login()
 
 def display_char(char):
@@ -81,6 +103,14 @@ def display_char(char):
             print(spacing,key.title()+":",visual_level+rightrail) # .title to capitalize
     print(border+"\n")
 # end display_char()
+
+class town(prompt):
+    """
+    1. After the user has selected a character in login() they arrive in the town
+    2. The user sees a list of what they can do in the town
+    3. Among the options available in town, is the option to leave the town and go to dungeon()
+    """
+    print(f'You arrive at the town {char}')
 
 # Run the prompt loop
 login().cmdloop()
