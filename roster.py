@@ -1,63 +1,65 @@
 import json
+from prompt import prompt
 
 def get_roster():
-    # since we don't need to store the roster all the time, this function will fetch it from the json on an as needed basis
+    # Set a roster variable based on a local json of characters
     with open('roster.json') as json_file:
         return json.load(json_file)
 
 def display_roster():
+    # Display the roster
+    # 1. Grab the roster from a local json file
+    # 2. Loop through the roster and display each char in it
     roster = get_roster()
     for item in roster:
         char_iteration = {}
         char_iteration[item] = roster[item]
         display_char(char_iteration)
-    return roster
 
 def select_char():
+    # Prompt the user to select a character
+    # 1. Display the available characters
+    # 2. Prompt the user to select a character
+    # 3. If the user selects a valid character, end this function and return the character's data
     char = False
-    roster_commands = {
-        "close": {
-            "title": "Close Roster",
-            "commands": {"close", "back"},
-            "action": "return False"
-        }
-    }
+    roster = get_roster()
+    roster_commands = False # this variable will catch the user's input that is returned from prompt()
 
     while char is False:
-        roster = display_roster()
-        char_select = input("What character would you like to play? ").title()
+        display_roster()
+        char_select = prompt("Which character would you like to play? ", roster_commands).title()
         
-        if char_select in roster_commands["close"]:
-            print("Closing the roster")
-            return False
-        
+        # User selected a valid char
         if char_select in roster:
             print("You selected",char_select)
             char = {}
             char[char_select] = roster[char_select]
             return char
-        else:
-            print("There is no character named that in the roster. Try again?")
-            return False
 
 def display_char(char):
-    if char is False:
-        print("There is no character selected.")
-    else:
-        # print the current loop's object name
-        gap = 13 # standard indentation characters
-        print("_"*gap*3) # lead each entry with a pagebreak line
-        for item in char:
-            character = "Character" # the object has a name with no key, so we createa fake key for print uniformity
-            spacing = " "*(gap - len(character)) # uniform display right rail
-            print(spacing,character+":",item) 
+    # Display an individual character's stats
+    # 1. Create formatting to make the stat page display all pretty
+    # 2. Loop through the char data and display the relevant info
+    # NOTE: Sorry I handled the sizes of the gaps all willy nilly and just made them work :/ probably should revisit this and make the math use uniform variables based on intended total page width
 
-            for key, value in char[item].items():
-                if isinstance(value, int):
-                    visual_level = "|"+("*"*(value))+("-"*(4-value))+"|"
-                else:
-                    visual_level = value
-                spacing = " "*(gap - len(key)) # uniform display right rail
-                print(spacing,key.title()+":",visual_level) # .title to capitalize
-    print("_"*gap*3)
+    gap = 9 # standard indentation characters
+    border = " "+("-"*gap*3)
+    print(border) # lead each entry with a pagebreak line
+    for item in char:
+        character = "Character" # the object has a name with no key, so we createa fake key for print uniformity
+        spacing = "|"+" "*(gap - len(character)) # uniform display right rail
+        rightrail = ((14-len(str(item)))*" ")+"|"
+        print(spacing,character+":",item,rightrail) 
+        print(" "+("-"*gap*3))
+
+        for key, value in char[item].items():
+            if isinstance(value, int):
+                visual_level = "["+str(value)+"] "+("* "*(value))+("  "*(5-value))
+                rightrail = ((4-len(str(value)*3))*" ")+"|"
+            else:
+                visual_level = value
+                rightrail = ((15-len(str(value)))*" ")+"|"
+            spacing = "|"+" "*(gap - len(key)) # create indent to align text right
+            print(spacing,key.title()+":",visual_level+rightrail) # .title to capitalize
+    print(border+"\n")
     
