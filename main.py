@@ -124,17 +124,7 @@ class create_char(object):
         self.mind = mind
         self.heart = heart
 
-class town(prompt):
-    """
-    1. After the user has selected a character in login() they arrive in the town
-    2. The user sees a list of what they can do in the town
-    3. Among the options available in town, is the option to leave the town and go to dungeon()
-    """
-
-    def preloop(self):
-        # Call this when the user first arrives in this class
-        print('You arrive in a town')
-
+class world(prompt):
     def do_where(self, arg):
         """Display your character's current location"""
         print(f'You are in a town')
@@ -150,7 +140,34 @@ class town(prompt):
             if item not in stats:
                 print(((left_width-len(item))*" "),item.title(),':',pchar[item])
             else: # if the stat is a number, display it as a visual
-                print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]", ("* "*pchar[item]))
+                print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
+
+class town(world):
+    """
+    1. After the user has selected a character in login() they arrive in the town
+    2. The user sees a list of what they can do in the town
+    3. Among the options available in town, is the option to leave the town and go to dungeon()
+    """
+
+    def preloop(self):
+        # Call this when the user first arrives in this class
+        print('You arrive in a town.')
+
+    def do_dungeon(self, arg):
+        """Leave the town and travel to a dungeon."""
+        dungeon().cmdloop()
+
+class dungeon(world):
+    """Go fight monsters!"""
+    def preloop(self):
+        print('You travel to a dungeon.')
+
+    def do_town(self, arg):
+        """Flee the dungeon and return to town."""
+        town().cmdloop()
+
+    def do_search(self, arg):
+        """Search the dungeon for treasure! ...or trouble."""
 
 # START GAME: Run the initial prompt loop
 if __name__ == '__main__':
