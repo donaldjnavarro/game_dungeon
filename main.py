@@ -125,6 +125,8 @@ class create_char(object):
         self.heart = heart
 
 class world(prompt):
+    """Parent class for all class prompts for a character that is logged in"""
+    
     def do_where(self, arg):
         """Display your character's current location"""
         print(f'You are in a town')
