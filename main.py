@@ -73,7 +73,7 @@ class login(prompt):
             char = roster[arg]
             # TODO: Need to send roster[arg] char data to town() or make it available globally?
             # TODO: End the login flow and proceed to the town flow
-            return town(char)
+            town().cmdloop()
     # end login()
 
 def display_char(char):
@@ -104,14 +104,18 @@ def display_char(char):
     print(border+"\n")
 # end display_char()
 
-def town(char):
+class town(prompt):
     """
     1. After the user has selected a character in login() they arrive in the town
     2. The user sees a list of what they can do in the town
     3. Among the options available in town, is the option to leave the town and go to dungeon()
     """
-    print(f'You arrive at the town {char}')
-    # print(f'You arrive at the town ')
+
+    def do_where(self, arg):
+        print(f'You are in a town')
+
+    def do_who(self, arg):
+        print(f'You are playing {char}')
 
 # START GAME: Run the initial prompt loop
 if __name__ == '__main__':
