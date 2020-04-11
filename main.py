@@ -136,10 +136,21 @@ class town(prompt):
         print('You arrive in a town')
 
     def do_where(self, arg):
+        """Display your character's current location"""
         print(f'You are in a town')
 
     def do_who(self, arg):
-        print("You are playing",char.name)
+        """Display your character's current stats"""
+        # print(char.__dict__) # prints the whole dictionary loaded in that var by its class
+        pchar = vars(char)
+        left_width = 10
+        stats = {"body", "mind", "speed", "heart"}
+
+        for item in pchar:
+            if item not in stats:
+                print(((left_width-len(item))*" "),item.title(),':',pchar[item])
+            else: # if the stat is a number, display it as a visual
+                print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]", ("* "*pchar[item]))
 
 # START GAME: Run the initial prompt loop
 if __name__ == '__main__':
