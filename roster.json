@@ -1,20 +1,17 @@
 {
     "Magnus": {
-          "type": "Warrior",
           "body": 3,
           "speed": 1,
           "heart": 2,
           "mind": 1
     },
     "Taako": {
-          "type": "Wizard",
           "body": 1,
           "speed": 2,
           "heart": 1,
           "mind": 3
     },
     "Merle": {
-          "type": "Cleric",
           "body": 2,
           "speed": 1,
           "heart": 3,
