@@ -1,9 +1,6 @@
 import cmd
 import json
 
-global char # the currently active character's stats
-char = {}
-
 class prompt(cmd.Cmd):
     """
     GLOBAL PROMPT:
@@ -34,13 +31,15 @@ class login(prompt):
     # 2. Login option provides interface for selecting a character from a local json file
     # 3. After selecting a character the user is navigated to the town() class
 
-    print(" -----------")
-    print("| New Game!")
-    print(" -----------")
-    print("| - Login")
-    print("| - Help")
-    print("| - Quit")
-    print(" -----------")
+    def preloop(self):
+        # Call this when the user first arrives in this class
+        print(" -----------")
+        print("| New Game!")
+        print(" -----------")
+        print("| - Login")
+        print("| - Help")
+        print("| - Quit")
+        print(" -----------")
 
     def do_login(self, arg):
         """
@@ -70,7 +69,12 @@ class login(prompt):
         arg = arg.title()
         if arg in roster:
             print('You have selected '+arg)
-            char = roster[arg]
+            char_name = arg
+            char_body = roster[arg]["body"]
+            char_speed = roster[arg]["speed"]
+            char_mind = roster[arg]["mind"]
+            char_heart = roster[arg]["heart"]
+            char = create_char(char_name, char_body, char_speed, char_mind, char_heart)
             # TODO: Need to send roster[arg] char data to town() or make it available globally?
             # TODO: End the login flow and proceed to the town flow
             town().cmdloop()
@@ -104,6 +108,17 @@ def display_char(char):
     print(border+"\n")
 # end display_char()
 
+class create_char(object):
+    """
+    Creates a character data structure that can be called anywhere in the game
+    """
+    def __init__(self, name, body, speed, mind, heart):
+        self.name = name
+        self.body = body
+        self.speed = speed
+        self.mind = mind
+        self.heart = heart
+
 class town(prompt):
     """
     1. After the user has selected a character in login() they arrive in the town
@@ -111,11 +126,15 @@ class town(prompt):
     3. Among the options available in town, is the option to leave the town and go to dungeon()
     """
 
+    def preloop(self):
+        # Call this when the user first arrives in this class
+        print('You arrive in a town')
+
     def do_where(self, arg):
         print(f'You are in a town')
 
     def do_who(self, arg):
-        print(f'You are playing {char}')
+        print("You are playing",char.name)
 
 # START GAME: Run the initial prompt loop
 if __name__ == '__main__':
