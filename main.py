@@ -49,25 +49,34 @@ class login(prompt):
         3. User is navigated to town() after selecting a character
         """
 
-        # ROSTER DISPLAY:
+        # ROSTER FETCH:
         # 1. Grab the roster from a local json file
         # 2. Loop through the roster and display each char in it
         global roster
         with open('roster.json') as json_file:
             roster = json.load(json_file)
 
-        if arg == "": # Typing login without an argument displays the roster
+        # USER INPUT: CHAR SELECT
+        # 1. If the user inputs "login" without an argument, then the roster displays
+        # 2. User selects a character from the roster
+        # 3. If the user enters an invalid character name, send validation message
+        # 4. User is navigated to town()        
+        arg = arg.title()
+
+        # ROSTER DISPLAY
+        if arg not in roster:
             for item in roster:
                 char_iteration = {}
                 char_iteration[item] = roster[item]
                 display_char(char_iteration)
             print(f'Input "login <character>" to select a character.')
+            
+            # VALIDATION
+            if arg != "":
+                print(f'{arg} is not in the roster. Please select a character that is available.')
 
-        # CHAR SELECT
-        # 1. User selects a character from the roster
-        # 2. User is navigated to town()        
-        arg = arg.title()
-        if arg in roster:
+        # CHARACTER SELECTED
+        elif arg in roster:
             print('You have selected '+arg)
             char_name = arg
             char_body = roster[arg]["body"]
@@ -77,6 +86,7 @@ class login(prompt):
             global char
             char = create_char(char_name, char_body, char_speed, char_mind, char_heart)
             town().cmdloop()
+        
     # end login()
 
 def display_char(char):
