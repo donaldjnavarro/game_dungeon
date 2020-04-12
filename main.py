@@ -85,7 +85,6 @@ class login(prompt):
             # print stats
             world.do_who(self, char)
             print()
-            # town().cmdloop()
             global here
             here = destination(town, "in a town")
             return True
@@ -165,11 +164,14 @@ class town(world):
         # Call this when the user first arrives in this class
         global here
         print(f'You arrive {here.phrase}.')
+        print()
+        print (f'There are areas nearby:')
+        print(f' - Dungeon')
 
     def do_dungeon(self, arg):
         """Leave the town and travel to a dungeon."""
         global here
-        here = destination(dungeon, "in a dungeon")
+        here = destination(dungeon, "into a dungeon")
         return True
 
 class dungeon(world):
@@ -177,7 +179,6 @@ class dungeon(world):
 
     def preloop(self):
         global here
-        here = destination(dungeon, "in a dungeon")
         print(f'You go {here.phrase}.')
 
     def do_town(self, arg):
