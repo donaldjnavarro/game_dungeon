@@ -153,6 +153,11 @@ class world(prompt):
             else: # if the stat is a number, display it as a visual
                 print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
 
+    global exits
+    exits = ""
+    def do_look(self, arg):
+        print("Nearby areas:",(exits).title())
+
 class town(world):
     """
     1. After the user has selected a character in login() they arrive in the town
@@ -161,11 +166,16 @@ class town(world):
     """
 
     def preloop(self):
-        # Call this when the user first arrives in this class
+        # ARRIVING: When first arriving in a new place, the preloop for this place's prompt class runs
+        # 1. Establish the exits out of this place
+        # 2. User sees message informing them where they arrived
+        # 3. User sees message informing them where they can go from here
         global here
+        global exits
+        exits = "dungeon" # set exits for the do_look() in the world class
         print(f'You arrive in {here.name}.')
         print()
-        print (f'Nearby there is a <Dungeon>')
+        print (f'Nearby areas:',exits.title())
 
     def do_dungeon(self, arg):
         """Leave the town and travel to a dungeon."""
@@ -177,11 +187,17 @@ class dungeon(world):
     """Go fight monsters!"""
 
     def preloop(self):
+        # ARRIVING: When first arriving in a new place, the preloop for this place's prompt class runs
+        # 1. Establish the exits out of this place
+        # 2. User sees message informing them where they arrived
+        # 3. User sees message informing them where they can go from here
         global here
+        global exits
+        exits = "town" # set exits for the do_look() in the world class
         print(f'You go into the {here.name}.')
         print(f'')
-        print(f'You can go back to <Town>.')
-        print(f'Or you can <search> for trouble')
+        print(f'Nearby areas:',exits.title())
+        print(f'...Or you can <search> for trouble')
 
     def do_town(self, arg):
         """Flee the dungeon and return to town."""
