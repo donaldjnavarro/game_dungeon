@@ -86,7 +86,7 @@ class login(prompt):
             world.do_who(self, char)
             print()
             global here
-            here = destination(town, "in a town")
+            here = destination("town",town)
             return True
         
     # end login()
@@ -138,7 +138,7 @@ class world(prompt):
 
     def do_where(self, arg):
         """Display your character's current location"""
-        print(f'You are {here.phrase}')
+        print(f'Location: {(here.name).title()}')
 
     def do_who(self, arg):
         """Display your character's current stats"""
@@ -163,15 +163,14 @@ class town(world):
     def preloop(self):
         # Call this when the user first arrives in this class
         global here
-        print(f'You arrive {here.phrase}.')
+        print(f'You arrive in {here.name}.')
         print()
-        print (f'There are areas nearby:')
-        print(f' - Dungeon')
+        print (f'Nearby there is a <Dungeon>')
 
     def do_dungeon(self, arg):
         """Leave the town and travel to a dungeon."""
         global here
-        here = destination(dungeon, "into a dungeon")
+        here = destination("dungeon",dungeon)
         return True
 
 class dungeon(world):
@@ -179,12 +178,15 @@ class dungeon(world):
 
     def preloop(self):
         global here
-        print(f'You go {here.phrase}.')
+        print(f'You go into the {here.name}.')
+        print(f'')
+        print(f'You can go back to <Town>.')
+        print(f'Or you can <search> for trouble')
 
     def do_town(self, arg):
         """Flee the dungeon and return to town."""
         global here
-        here = destination(town, "in a town")
+        here = destination("town",town)
         return True
 
     def do_search(self, arg):
@@ -192,9 +194,9 @@ class dungeon(world):
 
 class destination(object):
     """This class sets the destination variable, and does so in such a way that a unique cmdloop can be called for that destination dynamically"""
-    def __init__(self, name, phrase):
-        self.name = name # name of the cmdloop to be called
-        self.phrase = phrase # a human readable phrase that is used in prints
+    def __init__(self, name, func):
+        self.name = name # title of the destination
+        self.func = func # name of the cmdloop to be called
 
 # START GAME: Run the initial prompt loop
 if __name__ == '__main__':
@@ -204,5 +206,5 @@ if __name__ == '__main__':
         login().cmdloop() # run the login cmdloop until it returns True and the
     while char:
         global here
-        here.name().cmdloop()
+        here.func().cmdloop()
 
