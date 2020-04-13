@@ -64,10 +64,16 @@ class login(prompt):
 
         # ROSTER DISPLAY
         if arg not in roster:
-            for item in roster:
-                char_iteration = {}
-                char_iteration[item] = roster[item]
-                display_char(char_iteration)
+            for option in roster:
+                char_name = option
+                char_body = roster[option]["body"]
+                char_speed = roster[option]["speed"]
+                char_mind = roster[option]["mind"]
+                char_heart = roster[option]["heart"]
+                pchar = create_char(char_name, char_body, char_speed, char_mind, char_heart)
+                display_char(pchar)
+                print("--------------------------------")
+
             print(f'Input "login <character>" to select a character.')
             
             # VALIDATION
@@ -97,28 +103,16 @@ def display_char(char):
     # 1. Create formatting to make the stat page display all pretty
     # 2. Loop through the char data and display the relevant info
     # NOTE: Sorry I handled the sizes of the gaps all willy nilly and just made them work :/ probably should revisit this and make the math use uniform variables based on intended total page width
+    # NOTE: print(char.__dict__) # prints the whole dictionary loaded in that var by its class
+    pchar = vars(char)
+    left_width = 10
+    stats = {"body", "mind", "speed", "heart"}
 
-    gap = 9 # standard indentation characters
-    border = " "+("-"*gap*3)
-    print(border) # lead each entry with a pagebreak line
-    for item in char:
-        character = "Character" # the object has a name with no key, so we createa fake key for print uniformity
-        spacing = "|"+" "*(gap - len(character)) # uniform display right rail
-        rightrail = ((14-len(str(item)))*" ")+"|"
-        print(spacing,character+":",item,rightrail) 
-        print(" "+("-"*gap*3))
-
-        for key, value in char[item].items():
-            if isinstance(value, int):
-                visual_level = "["+str(value)+"] "+("* "*(value))+("  "*(5-value))
-                rightrail = ((4-len(str(value)*3))*" ")+"|"
-            else:
-                visual_level = value
-                rightrail = ((15-len(str(value)))*" ")+"|"
-            spacing = "|"+" "*(gap - len(key)) # create indent to align text right
-            print(spacing,key.title()+":",visual_level+rightrail) # .title to capitalize
-    print(border+"\n")
-    # end display_char()
+    for item in pchar:
+        if item not in stats:
+            print(((left_width-len(item))*" "),item.title(),':',pchar[item])
+        else: # if the stat is a number, display it as a visual
+            print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
 
 class create_char(object):
     """
@@ -143,16 +137,10 @@ class world(prompt):
 
     def do_who(self, arg):
         """Display your character's current stats"""
-        # print(char.__dict__) # prints the whole dictionary loaded in that var by its class
-        pchar = vars(char)
-        left_width = 10
-        stats = {"body", "mind", "speed", "heart"}
+        display_char(char)
 
-        for item in pchar:
-            if item not in stats:
-                print(((left_width-len(item))*" "),item.title(),':',pchar[item])
-            else: # if the stat is a number, display it as a visual
-                print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
+    def do_test(self, arg):
+        test()
 
     global exits
     exits = ""
