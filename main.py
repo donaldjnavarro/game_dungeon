@@ -1,3 +1,4 @@
+
 import cmd
 import json
 
@@ -117,7 +118,7 @@ def display_char(char):
             spacing = "|"+" "*(gap - len(key)) # create indent to align text right
             print(spacing,key.title()+":",visual_level+rightrail) # .title to capitalize
     print(border+"\n")
-# end display_char()
+    # end display_char()
 
 class create_char(object):
     """
@@ -214,13 +215,11 @@ class destination(object):
         self.name = name # title of the destination
         self.func = func # name of the cmdloop to be called
 
-# START GAME: Run the initial prompt loop
 if __name__ == '__main__':
-    global char
-    char = False
-    while char is False:
-        login().cmdloop() # run the login cmdloop until it returns True and the
-    while char:
-        global here
+    # START GAME: Run the initial prompt loop
+    global here
+    here = destination("login",login)
+
+    while here:
         here.func().cmdloop()
 
