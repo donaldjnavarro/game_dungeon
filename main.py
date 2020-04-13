@@ -118,6 +118,8 @@ class world(prompt):
     global exits
     exits = ""
     def do_look(self, arg):
+        if monster:
+            print("A",monster.name,"is here.")
         print("Nearby areas:",(exits).title())
 
 class town(world):
@@ -133,6 +135,8 @@ class town(world):
         # 2. User sees message informing them where they arrived
         # 3. User sees message informing them where they can go from here
         global here
+        global monster
+        monster = ""
         global exits
         exits = "dungeon" # set exits for the do_look() in the world class
         print(f'You arrive in {here.name}.')
@@ -147,13 +151,14 @@ class town(world):
 
 class dungeon(world):
     """Go fight monsters!"""
-
     def preloop(self):
         # ARRIVING: When first arriving in a new place, the preloop for this place's prompt class runs
         # 1. Establish the exits out of this place
         # 2. User sees message informing them where they arrived
         # 3. User sees message informing them where they can go from here
         global here
+        global monster
+        monster = ""
         global exits
         exits = "town" # set exits for the do_look() in the world class
         print(f'You go into the {here.name}.')
@@ -169,6 +174,10 @@ class dungeon(world):
 
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
+        global monster
+        monster = create_char("slime",1,1,1,1)
+        print("A",monster.name,"appears!")
+
 
 class create_char(object):
     """
