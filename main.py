@@ -98,33 +98,6 @@ class login(prompt):
         
     # end login()
 
-def display_char(char):
-    # Display an individual character's stats
-    # 1. Create formatting to make the stat page display all pretty
-    # 2. Loop through the char data and display the relevant info
-    # NOTE: Sorry I handled the sizes of the gaps all willy nilly and just made them work :/ probably should revisit this and make the math use uniform variables based on intended total page width
-    # NOTE: print(char.__dict__) # prints the whole dictionary loaded in that var by its class
-    pchar = vars(char)
-    left_width = 10
-    stats = {"body", "mind", "speed", "heart"}
-
-    for item in pchar:
-        if item not in stats:
-            print(((left_width-len(item))*" "),item.title(),':',pchar[item])
-        else: # if the stat is a number, display it as a visual
-            print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
-
-class create_char(object):
-    """
-    Creates a character data structure that can be called anywhere in the game
-    """
-    def __init__(self, name, body, speed, mind, heart):
-        self.name = name
-        self.body = body
-        self.speed = speed
-        self.mind = mind
-        self.heart = heart
-
 class world(prompt):
     """Parent class for all class prompts for a character that is logged in"""
 
@@ -197,11 +170,38 @@ class dungeon(world):
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
 
+class create_char(object):
+    """
+    Creates a character data structure that can be called anywhere in the game
+    """
+    def __init__(self, name, body, speed, mind, heart):
+        self.name = name
+        self.body = body
+        self.speed = speed
+        self.mind = mind
+        self.heart = heart
+
 class destination(object):
     """This class sets the destination variable, and does so in such a way that a unique cmdloop can be called for that destination dynamically"""
     def __init__(self, name, func):
         self.name = name # title of the destination
         self.func = func # name of the cmdloop to be called
+
+def display_char(char):
+    # Display an individual character's stats
+    # 1. Create formatting to make the stat page display all pretty
+    # 2. Loop through the char data and display the relevant info
+    # NOTE: Sorry I handled the sizes of the gaps all willy nilly and just made them work :/ probably should revisit this and make the math use uniform variables based on intended total page width
+    # NOTE: print(char.__dict__) # prints the whole dictionary loaded in that var by its class
+    pchar = vars(char)
+    left_width = 10
+    stats = {"body", "mind", "speed", "heart"}
+
+    for item in pchar:
+        if item not in stats:
+            print(((left_width-len(item))*" "),item.title(),':',pchar[item])
+        else: # if the stat is a number, display it as a visual
+            print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
 
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
