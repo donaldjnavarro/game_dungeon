@@ -139,8 +139,8 @@ class world(prompt):
             return True
         if result == "lose": # end current run and return to the town
             global here
-            here = destination("town",town)
             print(f'You escape the {here.name} and seek a place to recover.')
+            here = destination("town",town)
             return True
 
 class town(world):
