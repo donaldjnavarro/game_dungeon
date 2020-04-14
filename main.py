@@ -70,7 +70,7 @@ class login(prompt):
                 char_speed = roster[option]["speed"]
                 char_mind = roster[option]["mind"]
                 char_heart = roster[option]["heart"]
-                display_char(create_char(char_name, char_body, char_speed, char_mind, char_heart, False))
+                display_char(create_char(char_name, char_body, char_speed, char_mind, char_heart, False, 0))
                 print("--------------------------------")
             print(f'Input "login <character>" to select a character.')
             
@@ -86,7 +86,7 @@ class login(prompt):
             char_mind = roster[arg]["mind"]
             char_heart = roster[arg]["heart"]
             global char
-            char = create_char(char_name, char_body, char_speed, char_mind, char_heart, False)
+            char = create_char(char_name, char_body, char_speed, char_mind, char_heart, False, 0)
             # print stats
             world.do_who(self, char)
             print()
@@ -181,20 +181,21 @@ class dungeon(world):
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
         global monster
-        monster = create_char("slime",1,1,1,1, True)
+        monster = create_char("slime",1,1,1,1, True, 0)
         print("A",monster.name,"appears!")
 
 class create_char(object):
     """
     Creates a character data structure that can be called anywhere in the game
     """
-    def __init__(self, name, body, speed, mind, heart, aggro):
+    def __init__(self, name, body, speed, mind, heart, aggro, wounds):
         self.name = name
         self.body = body
         self.speed = speed
         self.mind = mind
         self.heart = heart
         self.aggro = aggro
+        self.wounds = wounds
 
 class destination(object):
     """This class sets the destination variable, and does so in such a way that a unique cmdloop can be called for that destination dynamically"""
@@ -216,6 +217,9 @@ def display_char(char):
             print(((left_width-len(item))*" "),item.title(),':',pchar[item])
         if item in stats: # if the stat is a number, display it as a visual
             print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
+    if pchar["wounds"] > 0:
+        print(" ------------------------------")
+        print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" X "*pchar[item]))
 
 from dice import *
 def challenge(enemy, stat):
@@ -246,8 +250,10 @@ def challenge(enemy, stat):
         print(f'You clashed with the {enemy.name} but neither of you were harmed.')
     elif char_roll > enemy_roll:
         print(f'You hit the {enemy.name}!')
+        enemy.wounds += 1
     else:
         print(f'The {enemy.name} hit you! OUCH!')
+        char.wounds += 1
 
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
