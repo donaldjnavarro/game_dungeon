@@ -143,8 +143,7 @@ class world(prompt):
             return True
         if result == "lose": # end current run and return to the town
             global here
-            print(f'You escape the {here.name} and seek a place to recover.')
-            here = destination("town",town)
+            here = destination("login",login)
             return True
 
 class town(world):
@@ -246,6 +245,7 @@ def challenge(enemy, stat):
     # 2. Roll a number of dice for the char and the opponent equal to the value of the stat being challenged
     # 3. Take the highest roll from the char and the opponent and compare them, the highest wins
     # 4. Apply consequences for the outcome. Wound or its equivalent
+    global char
     combat_dice = 100
     highest_roll = 0
 
@@ -274,14 +274,17 @@ def challenge(enemy, stat):
         char.wounds += 1
 
     # DEATH HANDLING
-    wound_threshold = 5
+    wound_threshold = 5 # define how much damage kills
     if enemy.wounds >= wound_threshold:
         print(f'\n*** {(enemy.name).title()} died! ***')
         global monster
         monster = False
         return "win"
     if char.wounds >= wound_threshold:
-        print(f'\n*** {(char.name).title()} died! ***')
+        print("\n******************************")
+        print(f' {(char.name).title()} died!')
+        print("******************************\n")
+        char = False
         return "lose"
 
 if __name__ == '__main__':
