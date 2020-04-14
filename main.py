@@ -70,7 +70,7 @@ class login(prompt):
                 char_speed = roster[option]["speed"]
                 char_mind = roster[option]["mind"]
                 char_heart = roster[option]["heart"]
-                pchar = create_char(char_name, char_body, char_speed, char_mind, char_heart)
+                pchar = create_char(char_name, char_body, char_speed, char_mind, char_heart, False)
                 display_char(pchar)
                 print("--------------------------------")
 
@@ -88,7 +88,7 @@ class login(prompt):
             char_mind = roster[arg]["mind"]
             char_heart = roster[arg]["heart"]
             global char
-            char = create_char(char_name, char_body, char_speed, char_mind, char_heart)
+            char = create_char(char_name, char_body, char_speed, char_mind, char_heart, False)
             # print stats
             world.do_who(self, char)
             print()
@@ -120,6 +120,7 @@ class world(prompt):
     def do_look(self, arg):
         if monster:
             print("A",monster.name,"is here.")
+        print("----------------------------------")
         print("Nearby areas:",(exits).title())
 
 class town(world):
@@ -161,7 +162,7 @@ class dungeon(world):
         monster = ""
         global exits
         exits = "town" # set exits for the do_look() in the world class
-        print(f'You go into the {here.name}.')
+        print(f'You travel into the {here.name}.')
         print(f'')
         print(f'Nearby areas:',exits.title())
         print(f'...Or you can <search> for trouble')
@@ -175,7 +176,7 @@ class dungeon(world):
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
         global monster
-        monster = create_char("slime",1,1,1,1)
+        monster = create_char("slime",1,1,1,1, True)
         print("A",monster.name,"appears!")
 
 
@@ -183,12 +184,13 @@ class create_char(object):
     """
     Creates a character data structure that can be called anywhere in the game
     """
-    def __init__(self, name, body, speed, mind, heart):
+    def __init__(self, name, body, speed, mind, heart, aggro):
         self.name = name
         self.body = body
         self.speed = speed
         self.mind = mind
         self.heart = heart
+        self.aggro = aggro
 
 class destination(object):
     """This class sets the destination variable, and does so in such a way that a unique cmdloop can be called for that destination dynamically"""
