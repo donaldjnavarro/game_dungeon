@@ -99,6 +99,9 @@ class login(prompt):
 class world(prompt):
     """Parent class for all class prompts for a character that is logged in"""
 
+    global monster
+    monster = False
+
     def preloop(self):
         global here
 
@@ -158,7 +161,7 @@ class town(world):
         # 3. User sees message informing them where they can go from here
         global here
         global monster
-        monster = False
+        # monster = False
         global exits
         exits = "dungeon" # set exits for the do_look() in the world class
         print(f'You arrive in {here.name}.')
