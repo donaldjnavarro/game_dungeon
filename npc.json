@@ -1,0 +1,17 @@
+{
+    "slime": {
+            "body": 1,
+            "magic": 1,
+            "aggro": true
+    },
+    "skeleton": {
+            "body": 2,
+            "magic": 1,
+            "aggro": true
+    },
+    "imp": {
+        "body": 1,
+        "magic": 2,
+        "aggro": true
+    }
+}

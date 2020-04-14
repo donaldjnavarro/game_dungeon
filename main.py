@@ -1,6 +1,7 @@
 
 import cmd
 import json
+from random import randint
 
 class prompt(cmd.Cmd):
     """
@@ -164,11 +165,11 @@ class town(world):
         # 3. User sees message informing them where they can go from here
         global here
         global monster
+        monster = False
         global activity
-        # monster = False
+        activity = "Rest at an inn"
         global exits
         exits = "Dungeon" # set exits for the do_look() in the world class
-        activity = "Rest at an inn"
         world.do_look(self, False)
         
     def do_dungeon(self, arg):
@@ -211,7 +212,9 @@ class dungeon(world):
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
         global monster
-        monster = create_char("slime",1,1,True, 0)
+        random_npc = randint(0,2)
+        monster_list = ["slime", "skeleton", "imp"]
+        monster = create_npc(monster_list[random_npc])
         print("A",monster.name,"appears!")
 
 class create_char(object):
@@ -224,6 +227,18 @@ class create_char(object):
         self.magic = magic
         self.aggro = aggro
         self.wounds = wounds
+
+def create_npc(mob):
+    with open('npc.json') as json_file:
+        npcs = json.load(json_file)
+
+    global monster
+    if mob in npcs:
+        npc_name = mob
+        npc_body = npcs[mob]["body"]
+        npc_magic = npcs[mob]["magic"]
+        npc_aggro = npcs[mob]["aggro"]
+        return create_char(npc_name, npc_body, npc_magic, npc_aggro, 0)
 
 class destination(object):
     """This class sets the destination variable, and does so in such a way that a unique cmdloop can be called for that destination dynamically"""
