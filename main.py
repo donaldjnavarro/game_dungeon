@@ -110,12 +110,12 @@ class world(prompt):
         """Display your character's current stats"""
         display_char(char)
 
-    def do_test(self, arg):
-        test()
-
     global exits
     exits = ""
     def do_look(self, arg):
+        """View the details of your current location. 
+        Including anyone or anything that can be interacted with 
+        as well as any locations that can be traveled to."""
         global monster
         if monster is not False:
             print("A",monster.name,"is here.")
@@ -123,6 +123,7 @@ class world(prompt):
         print("Nearby areas:",(exits).title())
 
     def do_attack(self, arg):
+        """Attack someone or something."""
         global monster
         result = False
         if arg:
