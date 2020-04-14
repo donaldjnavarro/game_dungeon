@@ -67,10 +67,8 @@ class login(prompt):
             for option in roster:
                 char_name = option
                 char_body = roster[option]["body"]
-                char_speed = roster[option]["speed"]
-                char_mind = roster[option]["mind"]
-                char_heart = roster[option]["heart"]
-                display_char(create_char(char_name, char_body, char_speed, char_mind, char_heart, False, 0))
+                char_magic = roster[option]["magic"]
+                display_char(create_char(char_name, char_body, char_magic, False, 0))
                 print("--------------------------------")
             print(f'Input "login <character>" to select a character.')
             
@@ -82,11 +80,10 @@ class login(prompt):
         elif arg in roster:
             char_name = arg
             char_body = roster[arg]["body"]
-            char_speed = roster[arg]["speed"]
-            char_mind = roster[arg]["mind"]
-            char_heart = roster[arg]["heart"]
+            char_magic = roster[arg]["magic"]
             global char
-            char = create_char(char_name, char_body, char_speed, char_mind, char_heart, False, 0)
+            char = create_char(char_name, char_body, char_magic, False, 0)
+            # display_char(create_char(char_name, char_body, char_magic, False, 0))
             # print stats
             world.do_who(self, char)
             print()
@@ -200,19 +197,17 @@ class dungeon(world):
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
         global monster
-        monster = create_char("slime",1,1,1,1, True, 0)
+        monster = create_char("slime",1,1,True, 0)
         print("A",monster.name,"appears!")
 
 class create_char(object):
     """
     Creates a character data structure that can be called anywhere in the game
     """
-    def __init__(self, name, body, speed, mind, heart, aggro, wounds):
+    def __init__(self, name, body, magic, aggro, wounds):
         self.name = name
         self.body = body
-        self.speed = speed
-        self.mind = mind
-        self.heart = heart
+        self.magic = magic
         self.aggro = aggro
         self.wounds = wounds
 
@@ -229,7 +224,7 @@ def display_char(char):
     # NOTE: print(char.__dict__) # prints the whole dictionary loaded in that var by its class
     pchar = vars(char)
     left_width = 10
-    stats = {"body", "mind", "speed", "heart"}
+    stats = {"body", "magic"}
 
     for item in pchar:
         if item == "name": # name displays but is not formatted like stats

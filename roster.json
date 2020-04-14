@@ -1,20 +1,14 @@
 {
     "Magnus": {
-          "body": 3,
-          "speed": 1,
-          "heart": 2,
-          "mind": 1
+            "body": 3,
+            "magic": 1
     },
     "Taako": {
-          "body": 1,
-          "speed": 2,
-          "heart": 1,
-          "mind": 3
+            "body": 1,
+            "magic": 3
     },
     "Merle": {
-          "body": 2,
-          "speed": 1,
-          "heart": 3,
-          "mind": 1
+            "body": 2,
+            "magic": 2
     }
 }
