@@ -117,15 +117,16 @@ class world(prompt):
     exits = ""
     def do_look(self, arg):
         global monster
-        if monster:
+        if monster is not False:
             print("A",monster.name,"is here.")
         print("----------------------------------")
         print("Nearby areas:",(exits).title())
 
     def do_attack(self, arg):
         global monster
+        result = False
         if arg:
-            if arg == monster.name:
+            if monster and arg == monster.name:
                 print(f'You attack {(arg).title()}')
                 result = challenge(monster, "body")
             else:
@@ -157,7 +158,7 @@ class town(world):
         # 3. User sees message informing them where they can go from here
         global here
         global monster
-        monster = ""
+        monster = False
         global exits
         exits = "dungeon" # set exits for the do_look() in the world class
         print(f'You arrive in {here.name}.')
@@ -179,7 +180,6 @@ class dungeon(world):
         # 3. User sees message informing them where they can go from here
         global here
         global monster
-        monster = ""
         global exits
         exits = "town" # set exits for the do_look() in the world class
         print(f'You travel into the {here.name}.')
@@ -274,6 +274,8 @@ def challenge(enemy, stat):
     wound_threshold = 5
     if enemy.wounds >= wound_threshold:
         print(f'\n*** {(enemy.name).title()} died! ***')
+        global monster
+        monster = False
         return "win"
     if char.wounds >= wound_threshold:
         print(f'\n*** {(char.name).title()} died! ***')
