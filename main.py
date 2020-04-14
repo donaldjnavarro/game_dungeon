@@ -11,7 +11,7 @@ class prompt(cmd.Cmd):
     - If user inputs a blank value, then the prompt does nothing and loops.
     - If another class inherits this class, then all of these functions will be available in their prompt, in addition to any functions within the child class.
     """
-    prompt  = ': '
+    prompt  = '\n: '
 
     def do_quit(self, arg):
         """Close the program. Nothing is saved."""
@@ -279,7 +279,7 @@ def challenge(enemy, stat):
 
     for x in range(0, char.__dict__[stat]):
         roll = dice(1,combat_dice)
-        print(f'DICE: {char.name} rolled {roll}')
+        print(f' > DICE: {char.name} rolled {roll}')
         if roll > highest_roll:
             highest_roll = roll
     char_roll = highest_roll
@@ -287,7 +287,7 @@ def challenge(enemy, stat):
     highest_roll = 0
     for x in range(0, enemy.__dict__[stat]):
         roll = dice(1,combat_dice)
-        print(f'DICE: {(enemy.name).title()} rolled {roll}')
+        print(f' > DICE: {(enemy.name).title()} rolled {roll}')
         if roll > highest_roll:
             highest_roll = roll
     enemy_roll = highest_roll
@@ -309,6 +309,12 @@ def challenge(enemy, stat):
         char.wounds += 1
         print(f'The {enemy.name} overwhelms your defense!')
 
+    # Display current health when damage is dealt
+    if char_roll < enemy_roll:
+        print(f'You are {get_status(char.wounds)}.')
+    if char_roll > enemy_roll:
+        print(f'The {enemy.name} is {get_status(enemy.wounds)}.')
+
     # DEATH HANDLING
     wound_threshold = 5 # define how much damage kills
     if enemy.wounds >= wound_threshold:
@@ -322,6 +328,11 @@ def challenge(enemy, stat):
         print("******************************\n")
         char = False
         return "lose"
+
+def get_status(damage):
+    """Translates damage numbers into words"""
+    wound_level = ["unwounded", "barely wounded", "lightly wounded", "moderately wounded", "very wounded", "severely wounded", "mortally wounded", "dead"]
+    return wound_level[damage]
 
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
