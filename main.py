@@ -193,6 +193,8 @@ class dungeon(world):
         """Flee the dungeon and return to town."""
         global here
         here = destination("town",town)
+        global monster
+        monster = False
         return True
 
     def do_search(self, arg):
