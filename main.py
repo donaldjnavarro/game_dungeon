@@ -121,6 +121,13 @@ class world(prompt):
         print("----------------------------------")
         print("Nearby areas:",(exits).title())
 
+    def do_attack(self, arg):
+        if arg == monster.name:
+            print(f'You attack {(arg).title()}')
+            challenge(monster, "body")
+        else:
+            print(f'There is no {arg} to attack.')
+
 class town(world):
     """
     1. After the user has selected a character in login() they arrive in the town
@@ -177,7 +184,6 @@ class dungeon(world):
         monster = create_char("slime",1,1,1,1, True)
         print("A",monster.name,"appears!")
 
-
 class create_char(object):
     """
     Creates a character data structure that can be called anywhere in the game
@@ -210,6 +216,38 @@ def display_char(char):
             print(((left_width-len(item))*" "),item.title(),':',pchar[item])
         if item in stats: # if the stat is a number, display it as a visual
             print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
+
+from dice import *
+def challenge(enemy, stat):
+    # Handle all conflicts and resolve them with dice rolls
+    # 1. Define how many sides the dice will have
+    # 2. Roll a number of dice for the char and the opponent equal to the value of the stat being challenged
+    # 3. Take the highest roll from the char and the opponent and compare them, the highest wins
+    # 4. Apply consequences for the outcome. Wound or its equivalent
+    combat_dice = 100
+    highest_roll = 0
+
+    for x in range(0, char.__dict__[stat]):
+        roll = dice(1,combat_dice)
+        print(f'DICE: {char.name} rolled {roll}')
+        if roll > highest_roll:
+            highest_roll = roll
+    char_roll = highest_roll
+    
+    highest_roll = 0
+    for x in range(0, enemy.__dict__[stat]):
+        roll = dice(1,combat_dice)
+        print(f'DICE: {(enemy.name).title()} rolled {roll}')
+        if roll > highest_roll:
+            highest_roll = roll
+    enemy_roll = highest_roll
+
+    if char_roll == enemy_roll:
+        print(f'You clashed with the {enemy.name} but neither of you were harmed.')
+    elif char_roll > enemy_roll:
+        print(f'You hit the {enemy.name}!')
+    else:
+        print(f'The {enemy.name} hit you! OUCH!')
 
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
