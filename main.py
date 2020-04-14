@@ -218,9 +218,7 @@ class dungeon(world):
         print("A",monster.name,"appears!")
 
 class create_char(object):
-    """
-    Creates a character data structure that can be called anywhere in the game
-    """
+    """Creates a character data structure that can be called anywhere in the game"""
     def __init__(self, name, body, magic, aggro, wounds):
         self.name = name
         self.body = body
@@ -229,6 +227,7 @@ class create_char(object):
         self.wounds = wounds
 
 def create_npc(mob):
+    """Creates an NPC from the arg passed in if it matches an entry in the npc.json"""
     with open('npc.json') as json_file:
         npcs = json.load(json_file)
 
