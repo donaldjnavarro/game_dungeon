@@ -134,8 +134,14 @@ class world(prompt):
             print(f'Attack what? Pick a target with "attack <target>"')
 
         # ENEMY DIED
-        if result == "win":
-            return True # end current prompt and reload current location anew
+        if result == "win": # end current prompt and reload current location anew
+            print(f'You defeat the {arg}!')
+            return True
+        if result == "lose": # end current run and return to the town
+            global here
+            here = destination("town",town)
+            print(f'You escape the {here.name} and seek a place to recover.')
+            return True
 
 class town(world):
     """
@@ -268,10 +274,10 @@ def challenge(enemy, stat):
     wound_threshold = 5
     if enemy.wounds >= wound_threshold:
         print(f'\n*** {(enemy.name).title()} died! ***')
-        global monster
-        monster = ""
+        return "win"
     if char.wounds >= wound_threshold:
         print(f'\n*** {(char.name).title()} died! ***')
+        return "lose"
 
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
