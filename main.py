@@ -116,10 +116,13 @@ class world(prompt):
         """View the details of your current location. 
         Including anyone or anything that can be interacted with 
         as well as any locations that can be traveled to."""
+        global objects
         global monster
         if monster is not False:
             print("A",monster.name,"is here.")
         print("----------------------------------")
+        if objects is not False:
+            print(f"{objects} is here.")
         print("Nearby areas:",(exits).title())
 
     def do_attack(self, arg):
@@ -158,9 +161,11 @@ class town(world):
         # 3. User sees message informing them where they can go from here
         global here
         global monster
+        global objects
         # monster = False
         global exits
         exits = "dungeon" # set exits for the do_look() in the world class
+        objects = "An inn"
         print(f'You arrive in {here.name}.')
         print()
         print (f'Nearby areas:',exits.title())
@@ -170,6 +175,14 @@ class town(world):
         global here
         here = destination("dungeon",dungeon)
         return True
+
+    def do_rest(self, arg):
+        """Take a rest at the inn to recuperate."""
+        if char.wounds > 0:
+            print("You rest at the inn until your wounds are healed")
+            char.wounds = 0
+        else:
+            print("You rest at the inn, like a lazy good for nothing.")
 
 class dungeon(world):
     """Go fight monsters!"""
