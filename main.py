@@ -301,6 +301,14 @@ def challenge(enemy, stat):
         print(f'The {enemy.name} hit you! OUCH!')
         char.wounds += 1
 
+    # Double damage on critical hits
+    if char_roll > 2*enemy_roll:
+        enemy.wounds += 1
+        print(f'You overwhelm the {enemy.name}\'s defense!')
+    if 2*char_roll < enemy_roll:
+        char.wounds += 1
+        print(f'The {enemy.name} overwhelms your defense!')
+
     # DEATH HANDLING
     wound_threshold = 5 # define how much damage kills
     if enemy.wounds >= wound_threshold:
