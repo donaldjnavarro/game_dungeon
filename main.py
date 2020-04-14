@@ -116,17 +116,22 @@ class world(prompt):
     global exits
     exits = ""
     def do_look(self, arg):
+        global monster
         if monster:
             print("A",monster.name,"is here.")
         print("----------------------------------")
         print("Nearby areas:",(exits).title())
 
     def do_attack(self, arg):
-        if arg == monster.name:
-            print(f'You attack {(arg).title()}')
-            challenge(monster, "body")
+        global monster
+        if arg:
+            if arg == monster.name:
+                print(f'You attack {(arg).title()}')
+                challenge(monster, "body")
+            else:
+                print(f'There is no {arg} to attack.')
         else:
-            print(f'There is no {arg} to attack.')
+            print(f'Attack what? Pick a target with "attack <target>"')
 
 class town(world):
     """
@@ -254,6 +259,15 @@ def challenge(enemy, stat):
     else:
         print(f'The {enemy.name} hit you! OUCH!')
         char.wounds += 1
+
+    # DEATH HANDLING
+    wound_threshold = 5
+    if enemy.wounds >= wound_threshold:
+        print(f'\n*** {(enemy.name).title()} died! ***')
+        global monster
+        monster = ""
+    if char.wounds >= wound_threshold:
+        print(f'\n*** {(char.name).title()} died! ***')
 
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
