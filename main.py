@@ -204,10 +204,20 @@ class dungeon(world):
     def do_town(self, arg):
         """Flee the dungeon and return to town."""
         global here
-        here = destination("town",town)
         global monster
-        monster = False
-        return True
+        if monster:
+            print(f'The {monster.name} tries to block your path out of {here.name}...')
+            flee = challenge(monster, "body")
+            if flee == "miss":
+                print(f'You attempt to flee, but the {monster.name} blocks your way out of the {here.name}.')
+            else:
+                print(f'You dodge the {monster.name} and escape the {here.name}!')
+                here = destination("town",town)
+                monster = False
+                return True
+        else:
+            here = destination("town",town)
+            return True
 
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
@@ -309,11 +319,6 @@ def challenge(enemy, stat):
         char.wounds += 1
         print(f'The {enemy.name} overwhelms your defense!')
 
-    # Display current health when damage is dealt
-    if char_roll < enemy_roll:
-        print(f'You are {get_status(char.wounds)}.')
-    if char_roll > enemy_roll:
-        print(f'The {enemy.name} is {get_status(enemy.wounds)}.')
 
     # DEATH HANDLING
     wound_threshold = 5 # define how much damage kills
@@ -329,6 +334,13 @@ def challenge(enemy, stat):
         char = False
         return "lose"
 
+    # Display current health when damage is dealt
+    if char_roll < enemy_roll:
+        print(f'You are {get_status(char.wounds)}.')
+        return "miss"
+    if char_roll > enemy_roll:
+        print(f'The {enemy.name} is {get_status(enemy.wounds)}.')
+        
 def get_status(damage):
     """Translates damage numbers into words"""
     wound_level = ["unwounded", "barely wounded", "lightly wounded", "moderately wounded", "very wounded", "severely wounded", "mortally wounded", "dead"]
