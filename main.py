@@ -212,10 +212,13 @@ class dungeon(world):
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
         global monster
-        random_npc = randint(0,2)
-        monster_list = ["slime", "skeleton", "imp"]
-        monster = create_npc(monster_list[random_npc])
-        print("A",monster.name,"appears!")
+        if monster:
+            print(f'You cannot search anymore until you deal with the {monster.name}.')
+        else:
+            random_npc = randint(0,2)
+            monster_list = ["slime", "skeleton", "imp"]
+            monster = create_npc(monster_list[random_npc])
+            print("A",monster.name,"appears!")
 
 class create_char(object):
     """Creates a character data structure that can be called anywhere in the game"""
