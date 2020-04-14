@@ -127,11 +127,15 @@ class world(prompt):
         if arg:
             if arg == monster.name:
                 print(f'You attack {(arg).title()}')
-                challenge(monster, "body")
+                result = challenge(monster, "body")
             else:
                 print(f'There is no {arg} to attack.')
         else:
             print(f'Attack what? Pick a target with "attack <target>"')
+
+        # ENEMY DIED
+        if result == "win":
+            return True # end current prompt and reload current location anew
 
 class town(world):
     """
