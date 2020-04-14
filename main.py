@@ -70,10 +70,8 @@ class login(prompt):
                 char_speed = roster[option]["speed"]
                 char_mind = roster[option]["mind"]
                 char_heart = roster[option]["heart"]
-                pchar = create_char(char_name, char_body, char_speed, char_mind, char_heart, False)
-                display_char(pchar)
+                display_char(create_char(char_name, char_body, char_speed, char_mind, char_heart, False))
                 print("--------------------------------")
-
             print(f'Input "login <character>" to select a character.')
             
             # VALIDATION
@@ -202,16 +200,15 @@ def display_char(char):
     # Display an individual character's stats
     # 1. Create formatting to make the stat page display all pretty
     # 2. Loop through the char data and display the relevant info
-    # NOTE: Sorry I handled the sizes of the gaps all willy nilly and just made them work :/ probably should revisit this and make the math use uniform variables based on intended total page width
     # NOTE: print(char.__dict__) # prints the whole dictionary loaded in that var by its class
     pchar = vars(char)
     left_width = 10
     stats = {"body", "mind", "speed", "heart"}
 
     for item in pchar:
-        if item not in stats:
+        if item == "name": # name displays but is not formatted like stats
             print(((left_width-len(item))*" "),item.title(),':',pchar[item])
-        else: # if the stat is a number, display it as a visual
+        if item in stats: # if the stat is a number, display it as a visual
             print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
 
 if __name__ == '__main__':
