@@ -116,13 +116,16 @@ class world(prompt):
         """View the details of your current location. 
         Including anyone or anything that can be interacted with 
         as well as any locations that can be traveled to."""
-        global objects
+        global activity
         global monster
+        print("..................................")
+        print(f'Location: {(here.name).title()}')
+        if activity is not False:
+            print(f"Activities: {activity}")
+        print()
         if monster is not False:
             print("A",monster.name,"is here.")
         print("----------------------------------")
-        if objects is not False:
-            print(f"{objects} is here.")
         print("Nearby areas:",(exits).title())
 
     def do_attack(self, arg):
@@ -161,15 +164,13 @@ class town(world):
         # 3. User sees message informing them where they can go from here
         global here
         global monster
-        global objects
+        global activity
         # monster = False
         global exits
-        exits = "dungeon" # set exits for the do_look() in the world class
-        objects = "An inn"
-        print(f'You arrive in {here.name}.')
-        print()
-        print (f'Nearby areas:',exits.title())
-
+        exits = "Dungeon" # set exits for the do_look() in the world class
+        activity = "Rest at an inn"
+        world.do_look(self, False)
+        
     def do_dungeon(self, arg):
         """Leave the town and travel to a dungeon."""
         global here
@@ -194,11 +195,10 @@ class dungeon(world):
         global here
         global monster
         global exits
-        exits = "town" # set exits for the do_look() in the world class
-        print(f'You travel into the {here.name}.')
-        print(f'')
-        print(f'Nearby areas:',exits.title())
-        print(f'...Or you can <search> for trouble')
+        global activity
+        activity = "Search for trouble"
+        exits = "Town" # set exits for the do_look() in the world class
+        world.do_look(self, False)
 
     def do_town(self, arg):
         """Flee the dungeon and return to town."""
