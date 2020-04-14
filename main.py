@@ -181,7 +181,7 @@ class town(world):
     def do_rest(self, arg):
         """Take a rest at the inn to recuperate."""
         if char.wounds > 0:
-            print("You rest at the inn until your wounds are healed")
+            print(f'You were {get_status(char.wounds)}, but after resting at the inn you are all healed.')
             char.wounds = 0
         else:
             print("You rest at the inn, like a lazy good for nothing.")
