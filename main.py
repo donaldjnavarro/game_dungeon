@@ -250,9 +250,11 @@ class dungeon(world):
                     global activity
                     # activity = activity+"\n"+(" "*12)+"Stairs going down"
                     # stairs = True
-                    print(f'You discover stairs leading deeper into {here.name}!')
+                    print(f'You discover stairs leading deeper into the dungeon!')
                     global dungeon_level
                     dungeon_level += 1
+                    global here
+                    here = destination("Dungeon Level "+str(dungeon_level), dungeon)
                     print(f'You are now in dungeon level {dungeon_level}')
                     return False
         print(f'You find nothing.')
