@@ -3,6 +3,9 @@ import cmd
 import json
 from random import randint
 
+global dungeon_level
+dungeon_level = 1
+
 class prompt(cmd.Cmd):
     """
     GLOBAL PROMPT:
@@ -170,6 +173,8 @@ class town(world):
         activity = "Rest at an inn"
         global exits
         exits = "Dungeon" # set exits for the do_look() in the world class
+        global stairs
+        stairs = False
         world.do_look(self, False)
         
     def do_dungeon(self, arg):
@@ -197,6 +202,7 @@ class dungeon(world):
         global monster
         global exits
         global activity
+        global dungeon_level
         activity = "Search for trouble"
         exits = "Town" # set exits for the do_look() in the world class
         world.do_look(self, False)
@@ -221,14 +227,37 @@ class dungeon(world):
 
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
+        """Random chance to find: a random monster, or stairs leading deeper"""
+        # No searching while monster present
         global monster
+        global stairs
         if monster:
             print(f'You cannot search anymore until you deal with the {monster.name}.')
-        else:
-            random_npc = randint(0,2)
-            monster_list = ["slime", "skeleton", "imp"]
-            monster = create_npc(monster_list[random_npc])
-            print("A",monster.name,"appears!")
+            return False
+
+        # Load a random find: monster or stairs
+        while monster == False and stairs == False:
+            # Chance of finding a monster
+            if (randint(0,1)):
+                random_npc = randint(0,2)
+                monster_list = ["slime", "skeleton", "imp"]
+                monster = create_npc(monster_list[random_npc])
+                print("A",monster.name,"appears!")
+                return False
+            # Chance of finding stairs
+            else:
+                if stairs == False:
+                    global activity
+                    # activity = activity+"\n"+(" "*12)+"Stairs going down"
+                    # stairs = True
+                    print(f'You discover stairs leading deeper into {here.name}!')
+                    global dungeon_level
+                    dungeon_level += 1
+                    print(f'You are now in dungeon level {dungeon_level}')
+                    return False
+        print(f'You find nothing.')
+
+        
 
 class create_char(object):
     """Creates a character data structure that can be called anywhere in the game"""
