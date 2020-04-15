@@ -170,8 +170,6 @@ class town(world):
         activity = "Rest at an inn"
         global exits
         exits = "Dungeon" # set exits for the do_look() in the world class
-        global stairs
-        stairs = False
         world.do_look(self, False)
         
     def do_dungeon(self, arg):
@@ -228,13 +226,12 @@ class dungeon(world):
         """Random chance to find: a random monster, or stairs leading deeper"""
         # No searching while monster present
         global monster
-        global stairs
         if monster:
             print(f'You cannot search anymore until you deal with the {monster.name}.')
             return False
 
         # Load a random find: monster or stairs
-        while monster == False and stairs == False:
+        while monster == False:
             # Chance of finding a monster
             if (randint(0,1)):
                 random_npc = randint(0,2)
@@ -244,17 +241,13 @@ class dungeon(world):
                 return False
             # Chance of finding stairs
             else:
-                if stairs == False:
-                    global activity
-                    # activity = activity+"\n"+(" "*12)+"Stairs going down"
-                    # stairs = True
-                    print(f'You discover stairs leading deeper into the dungeon!')
-                    global dungeon_level
-                    dungeon_level += 1
-                    global here
-                    here = destination("Dungeon Level "+str(dungeon_level), dungeon)
-                    print(f'You are now in dungeon level {dungeon_level}')
-                    return False
+                print(f'You discover stairs leading deeper into the dungeon!')
+                global dungeon_level
+                dungeon_level += 1
+                global here
+                here = destination("Dungeon Level "+str(dungeon_level), dungeon)
+                print(f'You are now in dungeon level {dungeon_level}')
+                return False
         print(f'You find nothing.')
 
 class create_char(object):
