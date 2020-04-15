@@ -3,9 +3,6 @@ import cmd
 import json
 from random import randint
 
-global dungeon_level
-dungeon_level = 1
-
 class prompt(cmd.Cmd):
     """
     GLOBAL PROMPT:
@@ -201,10 +198,11 @@ class dungeon(world):
         global here
         global monster
         global exits
-        global activity
-        global dungeon_level
-        activity = "Search for trouble"
         exits = "Town" # set exits for the do_look() in the world class
+        global activity
+        activity = "Search for trouble"
+        global dungeon_level
+        dungeon_level = 1
         world.do_look(self, False)
 
     def do_town(self, arg):
@@ -258,8 +256,6 @@ class dungeon(world):
                     print(f'You are now in dungeon level {dungeon_level}')
                     return False
         print(f'You find nothing.')
-
-        
 
 class create_char(object):
     """Creates a character data structure that can be called anywhere in the game"""
