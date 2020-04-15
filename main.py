@@ -274,7 +274,8 @@ def display_char(char):
             print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
     if pchar["wounds"] > 0:
         print(" ------------------------------")
-        print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" X "*pchar[item]))
+        print(((left_width-len(item))*" "),item.title(),':',get_status(pchar[item]).title())
+        print(left_width*" "," : [",pchar[item],"]"+(" X "*pchar[item]))
 
 from dice import *
 def challenge(enemy, stat):
@@ -340,7 +341,7 @@ def challenge(enemy, stat):
         return "miss"
     if char_roll > enemy_roll:
         print(f'The {enemy.name} is {get_status(enemy.wounds)}.')
-        
+
 def get_status(damage):
     """Translates damage numbers into words"""
     wound_level = ["unwounded", "barely wounded", "lightly wounded", "moderately wounded", "very wounded", "severely wounded", "mortally wounded", "dead"]
