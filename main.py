@@ -84,12 +84,15 @@ class login(prompt):
             char_magic = roster[arg]["magic"]
             global char
             char = create_char(char_name, char_body, char_magic, False, 0)
-            # display_char(create_char(char_name, char_body, char_magic, False, 0))
-            # print stats
             world.do_who(self, char)
             print()
             global here
             here = destination("town",town)
+            print(f'You have selected {char_name}')
+            print(".")
+            print(".")
+            print(".")
+            print(f'{char_name} arrives in {here.name}!')
             return True
         
     # end login()
