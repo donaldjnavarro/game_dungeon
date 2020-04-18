@@ -3,6 +3,9 @@ import cmd
 import json
 from random import randint
 
+global char
+char = False
+
 class prompt(cmd.Cmd):
     """
     GLOBAL PROMPT:
@@ -69,7 +72,7 @@ class login(prompt):
                 char_name = option
                 char_body = roster[option]["body"]
                 char_magic = roster[option]["magic"]
-                display_char(create_char(char_name, char_body, char_magic, False, 0))
+                display_char(create_char(char_name, char_body, char_magic, False, 0, 0))
                 print("--------------------------------")
             print(f'Input "login <character>" to select a character.')
             
@@ -83,7 +86,7 @@ class login(prompt):
             char_body = roster[arg]["body"]
             char_magic = roster[arg]["magic"]
             global char
-            char = create_char(char_name, char_body, char_magic, False, 0)
+            char = create_char(char_name, char_body, char_magic, False, 0, 0)
             print("--------------------------------")
             world.do_who(self, char)
             print("--------------------------------")
@@ -255,12 +258,13 @@ class dungeon(world):
 
 class create_char(object):
     """Creates a character data structure that can be called anywhere in the game"""
-    def __init__(self, name, body, magic, aggro, wounds):
+    def __init__(self, name, body, magic, aggro, wounds, xp):
         self.name = name
         self.body = body
         self.magic = magic
         self.aggro = aggro
         self.wounds = wounds
+        self.xp = xp
 
 def create_npc(mob):
     """Creates an NPC from the arg passed in if it matches an entry in the npc.json"""
@@ -273,7 +277,7 @@ def create_npc(mob):
         npc_body = npcs[mob]["body"]
         npc_magic = npcs[mob]["magic"]
         npc_aggro = npcs[mob]["aggro"]
-        return create_char(npc_name, npc_body, npc_magic, npc_aggro, 0)
+        return create_char(npc_name, npc_body, npc_magic, npc_aggro, 0, 0)
 
 class destination(object):
     """This class sets the destination variable, and does so in such a way that a unique cmdloop can be called for that destination dynamically"""
@@ -281,12 +285,13 @@ class destination(object):
         self.name = name # title of the destination
         self.func = func # name of the cmdloop to be called
 
-def display_char(char):
+def display_char(pchar):
     # Display an individual character's stats
     # 1. Create formatting to make the stat page display all pretty
     # 2. Loop through the char data and display the relevant info
+    # 3. Print wounds and xp if the user has already logged the char in
     # NOTE: print(char.__dict__) # prints the whole dictionary loaded in that var by its class
-    pchar = vars(char)
+    pchar = vars(pchar)
     left_width = 10
     stats = {"body", "magic"}
 
@@ -295,10 +300,18 @@ def display_char(char):
             print(((left_width-len(item))*" "),item.title(),':',pchar[item])
         if item in stats: # if the stat is a number, display it as a visual
             print(((left_width-len(item))*" "),item.title(),': [',pchar[item],"]"+(" * "*pchar[item]))
-    if pchar["wounds"] > 0:
-        print(" ------------------------------")
-        print(((left_width-len(item))*" "),item.title(),':',get_status(pchar[item]).title())
-        print(left_width*" "," : [",pchar[item],"]"+(" X "*pchar[item]))
+
+    # Only display the following with a selected character, do not display these in the login roster
+    global char
+    if char:
+        for item in pchar:
+            if (item == "xp"):
+                print(" ------------------------------")
+                print(((left_width-len("XP"))*" "),"XP : ",pchar[item])
+            if (item == "wounds"):
+                print(" ------------------------------")
+                print(((left_width-len(item))*" "),item.title(),':',get_status(pchar[item]).title())
+                print(left_width*" "," : [",pchar[item],"]"+(" X "*pchar[item]))
 
 from dice import *
 def challenge(enemy, stat):
@@ -350,6 +363,7 @@ def challenge(enemy, stat):
         print(f'\n*** {(enemy.name).title()} died! ***')
         global monster
         monster = False
+        award_xp(enemy)
         return "win"
     if char.wounds >= wound_threshold:
         print("\n******************************")
@@ -369,6 +383,10 @@ def get_status(damage):
     """Translates damage numbers into words"""
     wound_level = ["unwounded", "barely wounded", "lightly wounded", "moderately wounded", "very wounded", "severely wounded", "mortally wounded", "dead"]
     return wound_level[damage]
+
+def award_xp(npc):
+    """Assess if XP is warranted and apply it to the character"""
+    char.xp += 1
 
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
