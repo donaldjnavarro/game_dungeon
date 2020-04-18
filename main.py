@@ -94,10 +94,6 @@ class login(prompt):
             print("--------------------------------")
             global here
             here = destination("town",town)
-            print(".")
-            print(".")
-            print(".")
-            print(f'{char_name} arrives in {here.name}!')
             return True
         
     # end login()
@@ -303,6 +299,13 @@ class destination(object):
     def __init__(self, name, func):
         self.name = name # title of the destination
         self.func = func # name of the cmdloop to be called
+        
+        # If the user is logged in as a character, then display a message when they travel to a new destination
+        if char:
+            print(".")
+            print(".")
+            print(".")
+            print(f'{char.name} travels to the {name}!')
 
 def display_char(pchar):
     # Display an individual character's stats
@@ -410,6 +413,5 @@ if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
     global here
     here = destination("login",login)
-
     while here:
         here.func().cmdloop()
