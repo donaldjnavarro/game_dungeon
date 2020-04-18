@@ -84,11 +84,11 @@ class login(prompt):
             char_magic = roster[arg]["magic"]
             global char
             char = create_char(char_name, char_body, char_magic, False, 0)
+            print("--------------------------------")
             world.do_who(self, char)
-            print()
+            print("--------------------------------")
             global here
             here = destination("town",town)
-            print(f'You have selected {char_name}')
             print(".")
             print(".")
             print(".")
