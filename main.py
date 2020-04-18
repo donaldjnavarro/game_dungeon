@@ -5,6 +5,8 @@ from random import randint
 
 global char
 char = False
+global stats
+stats = {"body", "magic"}
 
 class prompt(cmd.Cmd):
     """
@@ -128,8 +130,9 @@ class world(prompt):
         print("..................................")
         print(f'Location: {(here.name).title()}')
         if activity is not False:
-            print(f"Activities: {activity}")
-        print()
+            print(f"Activities:")
+            for item in activity:
+                print(" -",item)
         if monster is not False:
             print("A",monster.name,"is here.")
         print("----------------------------------")
@@ -173,7 +176,7 @@ class town(world):
         global monster
         monster = False
         global activity
-        activity = "Rest at an inn"
+        activity = {"Rest at an inn","Train at the arena"}
         global exits
         exits = "Dungeon" # set exits for the do_look() in the world class
         world.do_look(self, False)
@@ -192,6 +195,22 @@ class town(world):
         else:
             print("You rest at the inn, like a lazy good for nothing.")
 
+    def do_train(self, arg):
+        """Apply your experience to train your body and mind."""
+        # The user is able to spend XP to increase their stats
+        global stats
+
+        if (char.xp < 1):
+            print("While you could use the training, you need to have new experiences before you are ready to push your limits.")
+        else:
+            if not arg:
+                print("You need to specify what stat you would like to train?")
+            if arg in stats:
+                char.xp -= 1
+                char.__dict__[arg] += 1
+                print(f'You train your {(arg).lower()} to become more powerful!')
+                world.do_who(self, char)
+
 class dungeon(world):
     """Go fight monsters!"""
     def preloop(self):
@@ -204,7 +223,7 @@ class dungeon(world):
         global exits
         exits = "Town" # set exits for the do_look() in the world class
         global activity
-        activity = "Search for trouble"
+        activity = {"Search for trouble"}
         global dungeon_level
         dungeon_level = 1
         world.do_look(self, False)
@@ -293,7 +312,7 @@ def display_char(pchar):
     # NOTE: print(char.__dict__) # prints the whole dictionary loaded in that var by its class
     pchar = vars(pchar)
     left_width = 10
-    stats = {"body", "magic"}
+    global stats
 
     for item in pchar:
         if item == "name": # name displays but is not formatted like stats
@@ -356,7 +375,6 @@ def challenge(enemy, stat):
         char.wounds += 1
         print(f'The {enemy.name} overwhelms your defense!')
 
-
     # DEATH HANDLING
     wound_threshold = 5 # define how much damage kills
     if enemy.wounds >= wound_threshold:
@@ -395,4 +413,3 @@ if __name__ == '__main__':
 
     while here:
         here.func().cmdloop()
-
