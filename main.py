@@ -137,24 +137,61 @@ class world(prompt):
     def do_attack(self, arg):
         """Attack someone or something."""
         global monster
+        global char
         result = False
         if arg:
             if monster and arg == monster.name:
-                print(f'You attack {(arg).title()}')
-                result = challenge(monster, "body")
+                enemy = monster
+                print(f'You attack {(enemy.name).title()}')
+                result = challenge(enemy, "body")
             else:
                 print(f'There is no {arg} to attack.')
+                return False
         else:
             print(f'Attack what? Pick a target with "attack <target>"')
+            return False
 
-        # ENEMY DIED
-        if result == "win": # end current prompt and reload current location anew
-            print(f'You defeat the {arg}!')
-            return True
-        if result == "lose": # end current run and return to the town
+        # Display the challenge result and deal damage
+        if result == True:
+            print(f'You hit the {enemy.name}!')
+            enemy.wounds += 1
+        elif result == False:
+            print(f'The {enemy.name} hit you! OUCH!')
+            char.wounds += 1
+        else:
+            print(f'You clashed with the {enemy.name} but neither of you were harmed.')
+
+        ## need to replace crit code
+        # # Double damage on critical hits
+        # if char_roll > 2*enemy_roll:
+        #     enemy.wounds += 1
+        #     print(f'You overwhelm the {enemy.name}\'s defense!')
+        # if 2*char_roll < enemy_roll:
+        #     char.wounds += 1
+        #     print(f'The {enemy.name} overwhelms your defense!')
+
+        # Display current health when damage is dealt
+        if result == False:
+            print(f'You are {get_status(char.wounds)}.')
+        if result == True:
+            print(f'The {enemy.name} is {get_status(enemy.wounds)}.')
+
+        # DEATH HANDLING
+        wound_threshold = 5 # define how much damage kills
+        if enemy.wounds >= wound_threshold:
+            print(f'\n*** {(enemy.name).title()} died! ***\n')
+            monster = False
+            if (award_xp(enemy)):
+                print(f'You gain experience!')
+            world.do_look(self, False)
+        if char.wounds >= wound_threshold:
+            print("\n******************************")
+            print(f' {(char.name).title()} died!')
+            print("******************************\n")
+            char = False
             global here
             here = destination("login",login)
-            return True
+
 
 class town(world):
     """
@@ -232,19 +269,8 @@ class dungeon(world):
         """Flee the dungeon and return to town."""
         global here
         global monster
-        if monster:
-            print(f'The {monster.name} tries to block your path out of {here.name}...')
-            flee = challenge(monster, "body")
-            if flee == "miss":
-                print(f'You attempt to flee, but the {monster.name} blocks your way out of the {here.name}.')
-            else:
-                print(f'You dodge the {monster.name} and escape the {here.name}!')
-                here = destination("town",town)
-                monster = False
-                return True
-        else:
-            here = destination("town",town)
-            return True
+        here = destination("town",town)
+        return True
 
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
@@ -303,15 +329,20 @@ def create_npc(mob):
 class destination(object):
     """This class sets the destination variable, and does so in such a way that a unique cmdloop can be called for that destination dynamically"""
     def __init__(self, name, func):
-        self.name = name # title of the destination
-        self.func = func # name of the cmdloop to be called
         
         # If the user is logged in as a character, then display a message when they travel to a new destination
+        # If there is a monster present, let it attempt to block you from traveling
         if char:
+            if monster:
+                escape = challenge(monster, "body")
+                if escape is False:
+                    print(f'{monster.name} blocked your path to {name}!')
             print(".")
             print(".")
             print(".")
             print(f'{char.name} travels to the {name}!')
+        self.name = name # title of the destination
+        self.func = func # name of the cmdloop to be called
 
 def display_char(pchar):
     # Display an individual character's stats
@@ -367,45 +398,10 @@ def challenge(enemy, stat):
             highest_roll = roll
     enemy_roll = highest_roll
 
-    if char_roll == enemy_roll:
-        print(f'You clashed with the {enemy.name} but neither of you were harmed.')
-    elif char_roll > enemy_roll:
-        print(f'You hit the {enemy.name}!')
-        enemy.wounds += 1
-    else:
-        print(f'The {enemy.name} hit you! OUCH!')
-        char.wounds += 1
-
-    # Double damage on critical hits
-    if char_roll > 2*enemy_roll:
-        enemy.wounds += 1
-        print(f'You overwhelm the {enemy.name}\'s defense!')
-    if 2*char_roll < enemy_roll:
-        char.wounds += 1
-        print(f'The {enemy.name} overwhelms your defense!')
-
-    # DEATH HANDLING
-    wound_threshold = 5 # define how much damage kills
-    if enemy.wounds >= wound_threshold:
-        print(f'\n*** {(enemy.name).title()} died! ***')
-        global monster
-        monster = False
-        award_xp(enemy)
-        return "win"
-    if char.wounds >= wound_threshold:
-        print("\n******************************")
-        print(f' {(char.name).title()} died!')
-        print("******************************\n")
-        char = False
-        return "lose"
-
-    # Display current health when damage is dealt
-    if char_roll < enemy_roll:
-        print(f'You are {get_status(char.wounds)}.')
-        return "miss"
     if char_roll > enemy_roll:
-        print(f'The {enemy.name} is {get_status(enemy.wounds)}.')
-
+        return True
+    elif enemy_roll > char_roll:
+        return False
 def get_status(damage):
     """Translates damage numbers into words"""
     wound_level = ["unwounded", "barely wounded", "lightly wounded", "moderately wounded", "very wounded", "severely wounded", "mortally wounded", "dead"]
@@ -414,6 +410,7 @@ def get_status(damage):
 def award_xp(npc):
     """Assess if XP is warranted and apply it to the character"""
     char.xp += 1
+    return True
 
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
