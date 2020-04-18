@@ -267,7 +267,6 @@ class dungeon(world):
                 dungeon_level += 1
                 global here
                 here = destination("Dungeon Level "+str(dungeon_level), dungeon)
-                print(f'You are now in dungeon level {dungeon_level}')
                 return False
         print(f'You find nothing.')
 
