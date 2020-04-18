@@ -416,6 +416,20 @@ def award_xp(npc):
     char.xp += 1
     return True
 
+def assess_level(npc):
+    """Assess a level ranking for an npc based on its stats"""
+    # All monsters start at level 1
+    # Increase the monster's level for any stats above 1
+
+    global stats
+    level = 1
+
+    print(npc.__dict__)
+    for stat in stats:
+        if (npc.__dict__[stat]) > 1:
+            level += (npc.__dict__[stat]-1)
+    return level
+
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
     global here
