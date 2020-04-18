@@ -142,7 +142,7 @@ class world(prompt):
         if arg:
             if monster and arg == monster.name:
                 enemy = monster
-                print(f'You attack {(enemy.name).title()}')
+                print(f'You attack the {enemy.name}!')
                 result = challenge(enemy, "body")
             else:
                 print(f'There is no {arg} to attack.')
@@ -155,9 +155,11 @@ class world(prompt):
         if result == True:
             print(f'You hit the {enemy.name}!')
             enemy.wounds += 1
+            return True
         elif result == False:
             print(f'The {enemy.name} hit you! OUCH!')
             char.wounds += 1
+            return False
         else:
             print(f'You clashed with the {enemy.name} but neither of you were harmed.')
 
@@ -259,8 +261,22 @@ class dungeon(world):
         """Flee the dungeon and return to town."""
         global here
         global monster
-        here = destination("town",town)
-        return True
+
+        if monster:
+            print(f'You attempt to leave the {here.name} but a {monster.name} is in your way.')
+            escape = world.do_attack(self, monster.name)
+            if escape is False:
+                print(f'The {(monster.name)} blocked your path out of the {here.name}!')
+                print()
+                world.do_look(self, False)
+                return False
+            else:
+                print("You escape!")
+                here = destination("town",town)
+                return True
+        else:
+            here = destination("town",town)
+            return True
 
     def do_search(self, arg):
         """Search the dungeon for treasure! ...or trouble."""
@@ -322,17 +338,13 @@ class destination(object):
         
         # If the user is logged in as a character, then display a message when they travel to a new destination
         # If there is a monster present, let it attempt to block you from traveling
+        self.name = name # title of the destination
+        self.func = func # name of the cmdloop to be called
         if char:
-            if monster:
-                escape = challenge(monster, "body")
-                if escape is False:
-                    print(f'{monster.name} blocked your path to {name}!')
             print(".")
             print(".")
             print(".")
             print(f'{char.name} travels to the {name}!')
-        self.name = name # title of the destination
-        self.func = func # name of the cmdloop to be called
 
 def display_char(pchar):
     # Display an individual character's stats
