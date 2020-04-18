@@ -161,15 +161,6 @@ class world(prompt):
         else:
             print(f'You clashed with the {enemy.name} but neither of you were harmed.')
 
-        ## need to replace crit code
-        # # Double damage on critical hits
-        # if char_roll > 2*enemy_roll:
-        #     enemy.wounds += 1
-        #     print(f'You overwhelm the {enemy.name}\'s defense!')
-        # if 2*char_roll < enemy_roll:
-        #     char.wounds += 1
-        #     print(f'The {enemy.name} overwhelms your defense!')
-
         # Display current health when damage is dealt
         if result == False:
             print(f'You are {get_status(char.wounds)}.')
@@ -377,7 +368,8 @@ def challenge(enemy, stat):
     # 1. Define how many sides the dice will have
     # 2. Roll a number of dice for the char and the opponent equal to the value of the stat being challenged
     # 3. Take the highest roll from the char and the opponent and compare them, the highest wins
-    # 4. Apply consequences for the outcome. Wound or its equivalent
+    # 4. return true if the player wins, return false if the player loses, return nothing if it is a tie
+
     global char
     combat_dice = 100
     highest_roll = 0
@@ -401,7 +393,7 @@ def challenge(enemy, stat):
         return True
     elif enemy_roll > char_roll:
         return False
-        
+
 def get_status(damage):
     """Translates damage numbers into words"""
     wound_level = ["unwounded", "barely wounded", "lightly wounded", "moderately wounded", "very wounded", "severely wounded", "mortally wounded", "dead"]
