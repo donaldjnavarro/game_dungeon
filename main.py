@@ -206,6 +206,10 @@ class town(world):
                 char.__dict__[arg] += 1
                 print(f'You train your {(arg).lower()} to become more powerful!')
                 world.do_who(self, char)
+            else:
+                print("That is not something you can train. Your options are:")
+                for option in stats:
+                    print(" -",(option).title())
 
 class dungeon(world):
     """Go fight monsters!"""
@@ -254,7 +258,7 @@ class dungeon(world):
         # Load a random find: monster or stairs
         while monster == False:
             # Chance of finding a monster
-            if (randint(0,1)):
+            if (randint(0,19)):
                 random_npc = randint(0,2)
                 monster_list = ["slime", "skeleton", "imp"]
                 monster = create_npc(monster_list[random_npc])
@@ -282,14 +286,17 @@ class create_char(object):
 
 def create_npc(mob):
     """Creates an NPC from the arg passed in if it matches an entry in the npc.json"""
+    # 1. Create an npc based on the stats in the npc.json
+    # 2. Magnify the npc stats by the current dungeon level
     with open('npc.json') as json_file:
         npcs = json.load(json_file)
 
     global monster
+    global dungeon_level
     if mob in npcs:
         npc_name = mob
-        npc_body = npcs[mob]["body"]
-        npc_magic = npcs[mob]["magic"]
+        npc_body = npcs[mob]["body"] * dungeon_level
+        npc_magic = npcs[mob]["magic"] * dungeon_level
         npc_aggro = npcs[mob]["aggro"]
         return create_char(npc_name, npc_body, npc_magic, npc_aggro, 0, 0)
 
