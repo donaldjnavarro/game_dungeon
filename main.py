@@ -155,11 +155,9 @@ class world(prompt):
         if result == True:
             print(f'You hit the {enemy.name}!')
             enemy.wounds += 1
-            return True
         elif result == False:
             print(f'The {enemy.name} hit you! OUCH!')
             char.wounds += 1
-            return False
         else:
             print(f'You clashed with the {enemy.name} but neither of you were harmed.')
 
@@ -176,14 +174,12 @@ class world(prompt):
             monster = False
             if (award_xp(enemy)):
                 print(f'You gain experience!')
-            world.do_look(self, False)
+                world.do_look(self, False)
         if char.wounds >= wound_threshold:
             print("\n******************************")
             print(f' {(char.name).title()} died!')
             print("******************************\n")
-            char = False
-            global here
-            here = destination("login",login)
+            quit()
 
 class town(world):
     """
@@ -263,15 +259,15 @@ class dungeon(world):
         global monster
 
         if monster:
-            print(f'You attempt to leave the {here.name} but a {monster.name} is in your way.')
-            escape = world.do_attack(self, monster.name)
+            print(f'You attempt to leave the {here.name} but a {monster.name} is in your way...')
+            escape = challenge(monster, "body")
             if escape is False:
-                print(f'The {(monster.name)} blocked your path out of the {here.name}!')
+                print(f'...the {(monster.name)} blocked your path out of the {here.name}!')
                 print()
                 world.do_look(self, False)
                 return False
             else:
-                print("You escape!")
+                print(f'...You escape the {monster.name}\'s clutches!')
                 here = destination("town",town)
                 return True
         else:
@@ -291,10 +287,7 @@ class dungeon(world):
         while monster == False:
             # Chance of finding a monster
             if (randint(0,19)):
-                random_npc = randint(0,2)
-                monster_list = ["slime", "skeleton", "imp"]
-                monster = create_npc(monster_list[random_npc])
-                print("A",monster.name,"appears!")
+                load_npc()
                 return False
             # Chance of finding stairs
             else:
@@ -424,11 +417,25 @@ def assess_level(npc):
     global stats
     level = 1
 
-    print(npc.__dict__)
     for stat in stats:
         if (npc.__dict__[stat]) > 1:
             level += (npc.__dict__[stat]-1)
     return level
+
+def load_npc():
+    global dungeon_level
+    global monster
+    with open('npc.json') as json_file:
+        npcs = json.load(json_file)
+
+    monster_list = []
+    for entry in npcs:
+        entry_stats = create_npc(entry)
+        if assess_level(entry_stats) <= dungeon_level:
+            monster_list.append(entry)
+    random_npc = randint(0, len(monster_list)-1)
+    monster = create_npc(monster_list[random_npc])
+    print("A",monster.name,"appears!")
 
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
