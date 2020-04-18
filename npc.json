@@ -1,18 +1,37 @@
 {
     "slime": {
-            "body": 1,
-            "magic": 1,
-            "aggro": true
+        "body": 1,
+        "magic": 1,
+        "aggro": true
     },
     "skeleton": {
-            "body": 2,
-            "magic": 1,
-            "aggro": true
+        "body": 2,
+        "magic": 1,
+        "aggro": true
     },
     "imp": {
         "body": 1,
         "magic": 2,
         "aggro": true
+    },
+    "gremlin": {
+        "body": 2,
+        "magic": 2,
+        "aggro": true
+    },
+    "ghost": {
+        "body": 1,
+        "magic": 3,
+        "aggro": true
+    },
+    "orc": {
+        "body": 3,
+        "magic": 1,
+        "aggro": true
+    },
+    "demon": {
+        "body": 5,
+        "magic": 5,
+        "aggro": true
     }
-    
 }
