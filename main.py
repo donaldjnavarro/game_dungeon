@@ -192,7 +192,6 @@ class world(prompt):
             global here
             here = destination("login",login)
 
-
 class town(world):
     """
     1. After the user has selected a character in login() they arrive in the town
@@ -402,6 +401,7 @@ def challenge(enemy, stat):
         return True
     elif enemy_roll > char_roll:
         return False
+        
 def get_status(damage):
     """Translates damage numbers into words"""
     wound_level = ["unwounded", "barely wounded", "lightly wounded", "moderately wounded", "very wounded", "severely wounded", "mortally wounded", "dead"]
