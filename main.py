@@ -8,6 +8,10 @@ char = False
 global stats
 stats = {"body", "magic"}
 
+global npcs
+with open('npc.json') as json_file:
+    npcs = json.load(json_file)
+
 class prompt(cmd.Cmd):
     """
     GLOBAL PROMPT:
@@ -313,11 +317,10 @@ def create_npc(mob):
     """Creates an NPC from the arg passed in if it matches an entry in the npc.json"""
     # 1. Create an npc based on the stats in the npc.json
     # 2. Magnify the npc stats by the current dungeon level
-    with open('npc.json') as json_file:
-        npcs = json.load(json_file)
 
     global monster
     global dungeon_level
+    global npcs
     if mob in npcs:
         npc_name = mob
         npc_body = npcs[mob]["body"] * dungeon_level
@@ -337,7 +340,7 @@ class destination(object):
             print(".")
             print(".")
             print(".")
-            print(f'{char.name} travels to the {name}!')
+            print(f' {char.name} travels to the {name}!')
 
 def display_char(pchar):
     # Display an individual character's stats
@@ -417,25 +420,42 @@ def assess_level(npc):
     global stats
     level = 1
 
+    print("[debug] assessing level of",npc.name)
+    print("[debug] assessing statblock:",npc.__dict__)
     for stat in stats:
+        print("[debug] assessing stat:",stat)
+        print("[debug] assessing level based on stat =",npc.__dict__[stat])
         if (npc.__dict__[stat]) > 1:
             level += (npc.__dict__[stat]-1)
+            print("[debug] adjusting level",level)
     return level
 
 def load_npc():
     global dungeon_level
     global monster
-    with open('npc.json') as json_file:
-        npcs = json.load(json_file)
+    global npcs
+    dungeon_level = 2
 
     monster_list = []
+
     for entry in npcs:
         entry_stats = create_npc(entry)
-        if assess_level(entry_stats) <= dungeon_level:
-            monster_list.append(entry)
-    random_npc = randint(0, len(monster_list)-1)
-    monster = create_npc(monster_list[random_npc])
-    print("A",monster.name,"appears!")
+        level = assess_level(entry_stats)
+        if level <= dungeon_level:
+            print("[debug] entry",entry)
+            print("[debug] entry_stats",entry_stats)
+            # monster_list.append(entry)
+        else:
+            print("[debug] entry",entry)
+            print("[debug] level",level)
+            print("[debug] entry_stats",entry_stats)
+
+            
+    print("[debug] monster_list",monster_list)
+    # random_npc = randint(0, len(monster_list)-1)
+    # print("[debug] randomizer:",random_npc)
+    # monster = create_npc(monster_list[random_npc])
+    # print("A",monster.name,"appears!")
 
 if __name__ == '__main__':
     # START GAME: Run the initial prompt loop
